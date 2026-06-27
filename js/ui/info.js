@@ -1,7 +1,8 @@
 // js/ui/info.js
 import { $ } from '../utils.js';
 import { getLvl, getXp, getStreak, getQuests, getQprog, getBdgLvl, getStats, getInv, L, setLvl, setXp, saveAll } from '../state.js';
-import { reqXP, BADGE_XP, CIRC } from '../config.js';
+import { reqXP } from '../game.js';
+import { BADGE_XP, CIRC } from '../config.js';
 import { S } from '../audio.js';
 import { notify, confetti, fireworks } from './notifications.js';
 
