@@ -32,8 +32,6 @@ export function applyBgHue(h) {
 
 export function $(id) { return document.getElementById(id); }
 
-export function reqXP(lvl) { return (lvl + 1) * 100; }
-
 export function highlightText(text, query) {
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
   if (idx < 0) return text;
