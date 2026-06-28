@@ -82,14 +82,20 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 .dd-close{background:rgba(96,165,250,.15);border:1px solid #60a5fa;color:#60a5fa;padding:10px 30px;border-radius:20px;font-weight:700;cursor:pointer;margin-top:24px;opacity:0;font-size:.86rem;z-index:1;transition:opacity .4s ease 1.6s;pointer-events:none}
 #diamondDropOv.on .dd-close{opacity:1;pointer-events:all}
 .dd-close:hover{background:rgba(96,165,250,.25)}
-.cw{border-radius:13px;padding:2px;cursor:pointer;transition:transform .18s,filter .18s;display:block}
-.cw:hover{transform:translateY(-2px);filter:brightness(1.08)}
-.cw:active{transform:scale(.94)}
-.cw.rarity-common{background:#888;box-shadow:0 0 0 1px rgba(200,200,200,.3)}
-.cw.rarity-gold{background:#fbbf24;box-shadow:0 0 8px #fbbf2444}
-.cw.rarity-rainbow{background:linear-gradient(45deg,#ff0000,#ff8800,#ffee00,#00cc44,#0088ff,#7700ff);background-size:300% 300%;animation:rbMove 4s linear infinite}
-.cw.rarity-unique{background:#ff4444;box-shadow:0 0 10px #ff222233}
-.cw.rarity-diamond{background:linear-gradient(135deg,#60a5fa,#93c5fd,#60a5fa);background-size:200% 200%;animation:dShimmer 2.2s ease-in-out infinite alternate,dGlow 2.2s ease-in-out infinite alternate}
+..cw {
+  border-radius: 13px;
+  padding: 3px;
+  cursor: pointer;
+  transition: transform 0.18s, filter 0.18s;
+  display: block;
+  background: transparent;
+  box-shadow: none;
+}
+.cw.rarity-common { background: #888; box-shadow: 0 0 0 1px rgba(200,200,200,0.4); }
+.cw.rarity-gold   { background: #fbbf24; box-shadow: 0 0 12px #fbbf2488; }
+.cw.rarity-rainbow{ background: linear-gradient(45deg,#ff0000,#ff8800,#ffee00,#00cc44,#0088ff,#7700ff); background-size: 300% 300%; animation: rbMove 4s linear infinite; box-shadow: 0 0 16px rgba(255,120,0,0.5); }
+.cw.rarity-unique { background: #ff4444; box-shadow: 0 0 16px #ff444488; }
+.cw.rarity-diamond{ background: linear-gradient(135deg,#60a5fa,#93c5fd,#60a5fa); background-size: 200% 200%; animation: dShimmer 2.2s ease-in-out infinite alternate, dGlow 2.2s ease-in-out infinite alternate; }
 @keyframes rbMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes dShimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
 @keyframes dGlow{0%{box-shadow:0 0 6px #60a5fa55}100%{box-shadow:0 0 22px #60a5facc}}
