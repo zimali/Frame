@@ -25,11 +25,8 @@ export function showPreview(card) {
   $('pFront').className = `pf rarity-${card.rarity}`;
   $('pBack').className = `pb rarity-${card.rarity}`;
 
-  fi.innerHTML = `<button class="pclose" id="pc1">✕</button><img src="${poster}" alt="${card.title}"><h3>${card.title}</h3><div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'}">${L().rn[card.rarity]}</div>`;
-  bi.innerHTML = `<button class="pclose" id="pc2">✕</button><h3 style="margin-bottom:8px">${card.title}</h3><p id="cardOv" style="color:#aaa;font-size:.7rem;line-height:1.5">...</p>`;
-
-  $('pc1').onclick = closePreview;
-  $('pc2').onclick = closePreview;
+  fi.innerHTML = `<img src="${poster}" alt="${card.title}"><h3>${card.title}</h3><div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'}">${L().rn[card.rarity]}</div>`;
+  bi.innerHTML = `<h3 style="margin-bottom:8px">${card.title}</h3><p id="cardOv" style="color:#aaa;font-size:.7rem;line-height:1.5">...</p>`;
 
   fetchMovieDetails(card.media_type, card.movieId).then(d => {
     const el = $('cardOv');
