@@ -41,12 +41,11 @@ export function showPreview(card) {
   fl.onclick = e => { if (spinning || e.target.classList.contains('pclose')) return; fl.classList.toggle('flipped'); };
 
   $('pSpinBtn').className = 'p-btn';
-  $('pSpinLbl').textContent = L().spin;
-  $('pFavBtn').innerHTML = card.favorite ?
-    `<i class="fas fa-heart" style="color:#fbbf24"></i> <span>${L().unfav}</span>` :
-    `<i class="fas fa-heart"></i> <span>${L().fav}</span>`;
-  $('pFavBtn').className = 'p-btn' + (card.favorite ? ' fav-on' : '');
-  $('pSellLbl').textContent = `${L().sell} (${SELL_V[card.rarity]})`;
+$('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+$('pFavBtn').innerHTML = card.favorite ?
+  `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
+  `<i class="fas fa-heart"></i>`;
+$('pFavBtn').className = 'p-btn' + (card.favorite ? ' fav-on' : '');
   $('scaleSlider').value = 1;
 
   const fw = $('flipWrap');
@@ -82,15 +81,15 @@ export function initPreview() {
     spinning = !spinning;
     S.spin();
     if (spinning) {
-      fl.classList.remove('flipped');
-      fl.classList.add('spin');
-      $('pSpinBtn').className = 'p-btn spin-on';
-      $('pSpinLbl').textContent = L().stop;
-    } else {
-      fl.classList.remove('spin');
-      $('pSpinBtn').className = 'p-btn';
-      $('pSpinLbl').textContent = L().spin;
-    }
+  fl.classList.remove('flipped');
+  fl.classList.add('spin');
+  $('pSpinBtn').className = 'p-btn spin-on';
+  $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+} else {
+  fl.classList.remove('spin');
+  $('pSpinBtn').className = 'p-btn';
+  $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+}
   });
 
   $('pFavBtn').addEventListener('click', () => {
@@ -103,9 +102,9 @@ export function initPreview() {
     setInv(inv);
     saveAll();
     $('pFavBtn').innerHTML = prevCard.favorite ?
-      `<i class="fas fa-heart" style="color:#fbbf24"></i> <span>${L().unfav}</span>` :
-      `<i class="fas fa-heart"></i> <span>${L().fav}</span>`;
-    $('pFavBtn').className = 'p-btn' + (prevCard.favorite ? ' fav-on' : '');
+  `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
+  `<i class="fas fa-heart"></i>`;
+$('pFavBtn').className = 'p-btn' + (prevCard.favorite ? ' fav-on' : '');
     renderInventory($('searchInp').value.trim());
   });
 
