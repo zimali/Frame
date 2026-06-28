@@ -19,8 +19,9 @@
 
 <!-- ═══ LOADING SCREEN ═══ -->
 <div id="loadScreen">
-  <div class="load-bulb">💡</div>
-  <div class="load-title">Welcome to Frame!</div>
+<div class="load-bulb">
+  <div class="frame-loader"></div>
+</div>  <div class="load-title">Welcome to Frame!</div>
   <div class="load-dots">
     <div class="load-dot"></div><div class="load-dot"></div><div class="load-dot"></div>
   </div>
@@ -29,8 +30,9 @@
 
 <!-- ═══ NAME ENTRY ═══ -->
 <div id="nameScreen" class="hidden">
-  <div class="name-logo">💡</div>
-  <div class="name-headline">Добро пожаловать!</div>
+<div class="name-logo">
+  <div class="frame-loader"></div>
+</div>  <div class="name-headline">Добро пожаловать!</div>
   <div class="name-sub">Как тебя зовут? Имя будет отображаться в прогрессе.</div>
   <div class="name-input-wrap">
     <input type="text" class="name-input" id="nameInput" placeholder="Твоё имя..." maxlength="24" autocomplete="off">
@@ -137,7 +139,11 @@
     <div class="open-center">
       <div id="packState" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
         <div class="quote-wrap" id="quoteWrap"><span class="q-text" id="qText"></span><span class="q-auth" id="qAuth"></span></div>
-        <div class="pack-area"><div class="pack-box" id="packBox"><span class="pack-lamp">💡</span></div></div>
+<div class="pack-area">
+  <div class="pack-box" id="packBox">
+    <div class="frame-loader"></div>
+  </div>
+</div>
         <p class="pack-hint" id="packHint">Нажми чтобы открыть</p>
       </div>
       <div id="resultState" style="display:none;flex-direction:column;align-items:center;gap:10px;width:100%;">
