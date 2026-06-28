@@ -1,6 +1,6 @@
 // js/main.js
 import { $, applyBgHue, setBodyRar } from './utils.js';
-import { getCfg, getLvl, getXp, getStreak, getPlayerName, L, saveAll, setMusicType } from './state.js';
+import { getCfg, getLvl, getXp, getStreak, getPlayerName, L, saveAll } from './state.js';
 import { initAudio, resumeAudio, S } from './audio.js';
 import { initNameScreen, updatePlayerNameUI, showNameScreen, hideNameScreen } from './ui/name.js';
 import { initPack, resetPack } from './ui/pack.js';
