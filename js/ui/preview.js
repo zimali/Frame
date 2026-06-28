@@ -70,9 +70,7 @@ export function closePreview() {
 }
 
 export function initPreview() {
-  
-  $('previewClose').addEventListener('click', closePreview);
-  
+    
   $('prevOv').addEventListener('click', e => { if (e.target === $('prevOv')) closePreview(); });
 
   $('pSpinBtn').addEventListener('click', () => {
