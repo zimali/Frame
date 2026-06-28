@@ -111,8 +111,19 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 .cw:hover .ci::after{left:120%}
 #tab-inv{gap:9px}
 .inv-filters{display:flex;flex-direction:column;gap:6px}
-.filter-row{display:flex;gap:5px;align-items:center;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-.filter-row::-webkit-scrollbar{display:none}
+.filter-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+.filter-row::-webkit-scrollbar {
+  display: none;
+}
 .search-row{display:flex;gap:8px;align-items:center;position:relative}
 .search-box{flex:1;position:relative}
 .search-box i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#555;font-size:.8rem;pointer-events:none}
