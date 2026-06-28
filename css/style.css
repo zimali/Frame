@@ -323,12 +323,13 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 @media(max-width:380px){.nav-btn{font-size:.5rem;padding:4px 1px}.nav-btn i{font-size:1rem}.inv-grid{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}.flip-wrap{width:170px;height:243px}.preview-bar{padding:10px}.p-btn{font-size:.68rem;padding:7px 10px}}
 @media(max-width:320px){.inv-grid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}.flip-wrap{width:148px;height:211px}}
 @media(max-height:600px){.pack-area,.result-card-in-area{width:min(120px,32vw);height:min(171px,46vw)}}
+
 /* Вращающийся белый квадрат с рамкой */
 .frame-loader {
-  width: 50px;
-  height: 50px;
-  border: 3px solid rgba(255,255,255,0.3);
-  border-top: 3px solid #ffffff;
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255,255,255,0.3);
+  border-top: 6px solid #ffffff;
   border-radius: 8px;
   animation: spinFrame 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
   display: inline-block;
