@@ -99,9 +99,32 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 @keyframes rbMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes dShimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
 @keyframes dGlow{0%{box-shadow:0 0 6px #60a5fa55}100%{box-shadow:0 0 22px #60a5facc}}
-.ci{background:#181818;border-radius:11px;padding:5px;text-align:center;display:flex;flex-direction:column;height:100%;position:relative;overflow:hidden}
-.ci img{width:100%;border-radius:7px;display:block;aspect-ratio:2/3;object-fit:cover}
-.ci .ct{font-size:.58rem;margin-top:3px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci {
+  background: #181818;
+  border-radius: 11px;
+  padding: 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.ci img {
+  width: 100%;
+  border-radius: 7px;
+  display: block;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+.ci .ct {
+  font-size: 0.5rem;
+  margin-top: 2px;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .ci .rl{font-size:.54rem;font-weight:700;margin-top:2px}
 .rarity-common .rl{color:#ccc}
 .rarity-gold .rl{color:#fbbf24}
