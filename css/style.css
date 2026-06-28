@@ -350,3 +350,25 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/* Кнопка закрытия preview — в углу экрана */
+.preview-ov .pclose {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.preview-ov .pclose:hover {
+  background: rgba(255,255,255,0.2);
+}
