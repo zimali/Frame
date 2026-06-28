@@ -62,6 +62,7 @@
 
 <!-- ═══ PREVIEW OVERLAY ═══ -->
 <div class="preview-ov" id="prevOv">
+  <button class="pclose" id="pClose" aria-label="Закрыть"><i class="fas fa-xmark"></i></button>
   <div class="preview-top-space">
     <div class="flip-wrap" id="flipWrap">
       <div class="flipper" id="flipper">
@@ -72,8 +73,8 @@
   </div>
   <div class="preview-bar">
     <div class="pbar-row">
-      <button class="p-btn" id="pSpinBtn"><i class="fas fa-rotate"></i> <span id="pSpinLbl">Вращать</span></button>
-      <button class="p-btn" id="pFavBtn"><i class="fas fa-heart"></i> <span id="pFavLbl">В избранное</span></button>
+      <button class="p-btn icon-only" id="pSpinBtn" title="Вращать" aria-label="Вращать"><i class="fas fa-rotate"></i></button>
+      <button class="p-btn icon-only" id="pFavBtn" title="В избранное" aria-label="В избранное"><i class="fas fa-heart"></i></button>
       <button class="p-btn sell-btn" id="pSellBtn"><i class="fas fa-coins"></i> <span id="pSellLbl">Продать</span></button>
     </div>
     <div class="scale-row">
@@ -150,7 +151,7 @@
       <div id="resultState" style="display:none;flex-direction:column;align-items:center;gap:10px;width:100%;">
         <div class="result-rarity" id="resRarity"></div>
         <div class="result-card-in-area"><div class="result-card-wrap" id="resCard"></div></div>
-        <button class="close-result-btn" id="closeResBtn">Закрыть</button>
+        <button class="close-result-btn" id="closeResBtn" aria-label="Закрыть" title="Закрыть"><i class="fas fa-xmark"></i></button>
       </div>
     </div>
   </div>
@@ -159,10 +160,10 @@
   <div class="tab-pane" id="tab-inv">
     <div class="inv-filters">
       <div class="search-row" style="position:relative;">
-        <div class="search-box"><i class="fas fa-magnifying-glass"></i><input type="text" id="searchInp" placeholder="" autocomplete="off"></div>
+        <div class="search-box"><i class="fas fa-magnifying-glass"></i><input type="text" id="searchInp" placeholder="" autocomplete="off" aria-label="Поиск"></div>
         <div id="searchSuggestions"></div>
       </div>
-      <div class="filter-row">
+      <div class="filter-row" id="invFilterRow">
         <button class="chip on" data-sort="new" id="sortNew">Новые</button>
         <button class="chip" data-sort="az">A–Z</button>
         <button class="chip" data-sort="za">Z–A</button>
