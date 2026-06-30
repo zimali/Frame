@@ -4,26 +4,51 @@ import { getCfg, updateCfg, saveAll, getPlayerName, setPlayerName, L, resetAll }
 import { initAudio, resumeAudio, startMusic, stopMusic, updateMusicVol, S } from '../audio.js';
 import { openTutorial } from './tutorial.js';
 import { updatePlayerNameUI } from './name.js';
+import { renderInventory } from './inventory.js';
 
 const SWATCH_HUES = [
-  { h: 0, bg: 'hsl(0,0%,8%)', label: 'Нейтральный' },
-  { h: 220, bg: 'hsl(220,35%,9%)', label: 'Синий' },
-  { h: 280, bg: 'hsl(280,30%,8%)', label: 'Фиолетовый' },
-  { h: 160, bg: 'hsl(160,30%,8%)', label: 'Зелёный' },
-  { h: 30, bg: 'hsl(30,45%,8%)', label: 'Янтарный' },
-  { h: 350, bg: 'hsl(350,35%,8%)', label: 'Красный' }
+  { h: 160, key: 'green' },
+  { h: 220, key: 'blue' },
+  { h: 280, key: 'purple' },
+  { h: 30, key: 'amber' },
+  { h: 350, key: 'red' },
+  { h: 0, key: 'neutral' }
 ];
+
+const SWATCH_LABELS = {
+  ru: { green: 'Зелёный', blue: 'Синий', purple: 'Фиолетовый', amber: 'Янтарный', red: 'Красный', neutral: 'Нейтральный' },
+  en: { green: 'Green', blue: 'Blue', purple: 'Purple', amber: 'Amber', red: 'Red', neutral: 'Neutral' },
+  es: { green: 'Verde', blue: 'Azul', purple: 'Morado', amber: 'Ámbar', red: 'Rojo', neutral: 'Neutro' },
+  de: { green: 'Grün', blue: 'Blau', purple: 'Violett', amber: 'Bernstein', red: 'Rot', neutral: 'Neutral' },
+  fr: { green: 'Vert', blue: 'Bleu', purple: 'Violet', amber: 'Ambre', red: 'Rouge', neutral: 'Neutre' },
+  tr: { green: 'Yeşil', blue: 'Mavi', purple: 'Mor', amber: 'Amber', red: 'Kırmızı', neutral: 'Nötr' },
+  ja: { green: 'グリーン', blue: 'ブルー', purple: 'パープル', amber: 'アンバー', red: 'レッド', neutral: 'ニュートラル' },
+  zh: { green: '绿色', blue: '蓝色', purple: '紫色', amber: '琥珀色', red: '红色', neutral: '中性' },
+  ar: { green: 'أخضر', blue: 'أزرق', purple: 'بنفسجي', amber: 'كهرماني', red: 'أحمر', neutral: 'محايد' },
+  pt: { green: 'Verde', blue: 'Azul', purple: 'Roxo', amber: 'Âmbar', red: 'Vermelho', neutral: 'Neutro' }
+};
+
+const LANG_META = {
+  ru: { label: 'Русский', flag: '🇷🇺' }, en: { label: 'English', flag: '🇬🇧' },
+  es: { label: 'Español', flag: '🇪🇸' }, de: { label: 'Deutsch', flag: '🇩🇪' },
+  fr: { label: 'Français', flag: '🇫🇷' }, tr: { label: 'Türkçe', flag: '🇹🇷' },
+  ja: { label: '日本語', flag: '🇯🇵' }, zh: { label: '中文', flag: '🇨🇳' },
+  ar: { label: 'العربية', flag: '🇸🇦' }, pt: { label: 'Português', flag: '🇵🇹' }
+};
 
 function buildSwatches() {
   const c = $('swatches');
   const cfg = getCfg();
+  const labels = SWATCH_LABELS[cfg.lang] || SWATCH_LABELS.ru;
   c.innerHTML = '';
   SWATCH_HUES.forEach(s => {
-    const el = document.createElement('div');
+    const el = document.createElement('button');
+    el.type = 'button';
     el.className = 'sw' + (s.h === cfg.bgHue ? ' on' : '');
-    el.style.background = s.bg;
+    el.style.background = `hsl(${s.h},35%,18%)`;
     el.dataset.h = s.h;
-    el.title = s.label;
+    el.title = labels[s.key];
+    el.setAttribute('aria-label', labels[s.key]);
     el.addEventListener('click', () => {
       document.querySelectorAll('.sw').forEach(x => x.classList.remove('on'));
       el.classList.add('on');
@@ -39,18 +64,21 @@ function buildLangBtns() {
   const c = $('langRow');
   const cfg = getCfg();
   c.innerHTML = '';
-  const langs = { ru: 'RU', en: 'EN', es: 'ES', de: 'DE', fr: 'FR', tr: 'TR', ja: 'JA', zh: 'ZH', ar: 'AR', pt: 'PT' };
-  Object.keys(langs).forEach(k => {
+  Object.keys(LANG_META).forEach(k => {
+    const meta = LANG_META[k];
     const b = document.createElement('button');
+    b.type = 'button';
     b.className = 'l-btn' + (k === cfg.lang ? ' on' : '');
-    b.textContent = langs[k];
+    b.innerHTML = `<span class="l-flag">${meta.flag}</span> ${meta.label}`;
     b.dataset.lang = k;
     b.addEventListener('click', () => {
+      if (getCfg().lang === k) return;
       updateCfg({ lang: k });
-      document.querySelectorAll('.l-btn').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
       S.click();
-      // Re-apply i18n is handled by main
+      buildLangBtns();
+      buildSwatches();
+      if (window.applyI18n) window.applyI18n();
+      renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
     });
     c.appendChild(b);
   });
@@ -62,9 +90,7 @@ export function openSettings() {
   buildLangBtns();
   $('sfxVol').value = cfg.sfxVol;
   $('musicVol').value = cfg.musicVol;
-  $('musicOn').checked = cfg.musicOn;
-  $('animOn').checked = cfg.anim;
-  $('fwOn').checked = cfg.fw;
+  $('tooltipsOn').checked = cfg.tooltips;
   $('settNameInput').value = getPlayerName();
   $('settModal').classList.add('on');
 }
@@ -88,25 +114,15 @@ export function initSettings() {
   $('musicVol').addEventListener('input', function () {
     updateCfg({ musicVol: parseFloat(this.value) });
     updateMusicVol();
-  });
-
-  $('musicOn').addEventListener('change', function () {
-    updateCfg({ musicOn: this.checked });
-    if (this.checked) {
-      initAudio();
-      resumeAudio();
-      startMusic('main');
-    } else {
-      stopMusic();
+    if (parseFloat(this.value) > 0) {
+      const cfg = getCfg();
+      if (cfg.musicOn) { initAudio(); resumeAudio(); startMusic('main'); }
     }
   });
 
-  $('animOn').addEventListener('change', function () {
-    updateCfg({ anim: this.checked });
-  });
-
-  $('fwOn').addEventListener('change', function () {
-    updateCfg({ fw: this.checked });
+  $('tooltipsOn').addEventListener('change', function () {
+    updateCfg({ tooltips: this.checked });
+    renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
   });
 
   $('resetBtn').addEventListener('click', () => {

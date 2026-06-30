@@ -1,29 +1,15 @@
 // js/ui/pack.js
-import { $ } from '../utils.js';
-import { PACK_W, XP_R, QUOTES } from '../config.js';
-import { pushInv, incStat, saveAll, L, hasCard, getInv } from '../state.js';
+import { $, setBodyRar, wireCardTooltips, showCardTip, hideCardTip } from '../utils.js';
+import { PACK_W, XP_R, TMDB_IMG, RAR_COLOR } from '../config.js';
+import { pushInv, incStat, saveAll, L, hasCard, getInv, nextCardSerial, getCfg } from '../state.js';
 import { addXP } from '../game.js';
 import { cardSound, S } from '../audio.js';
-import { setBodyRar, cardHTML } from '../utils.js';
 import { getCandidates } from '../api.js';
 import { confetti, fireworks } from './notifications.js';
 import { checkQuests, checkBadges } from '../game.js';
 
-let lastQ = -1;
 let opening = false;
-
-export function showQuote() {
-  let i;
-  do { i = Math.floor(Math.random() * QUOTES.length); } while (i === lastQ && QUOTES.length > 1);
-  lastQ = i;
-  $('qText').textContent = `"${QUOTES[i].t}"`;
-  $('qAuth').textContent = `— ${QUOTES[i].a}`;
-  $('quoteWrap').classList.remove('hide');
-}
-
-export function hideQuote() {
-  $('quoteWrap').classList.add('hide');
-}
+let resultSpinning = false;
 
 export function resetPack() {
   const box = $('packBox');
@@ -35,9 +21,24 @@ export function resetPack() {
   hint.style.opacity = '1';
   ps.style.display = 'flex';
   rs.style.display = 'none';
-  $('resCard').innerHTML = '';
+  $('resCard').style.display = 'none';
+  $('resScrollMask').style.display = 'none';
+  $('resScrollTrack').innerHTML = '';
+  $('resFlipper').classList.remove('flipped', 'spin');
+  resultSpinning = false;
   setBodyRar(null);
-  showQuote();
+}
+
+function buildScrollStrip() {
+  // A quick blur of mixed rarity placeholder covers, for the "fast scroll" reveal feel.
+  const track = $('resScrollTrack');
+  const rars = ['common', 'gold', 'rainbow', 'unique', 'diamond'];
+  let html = '';
+  for (let i = 0; i < 18; i++) {
+    const r = rars[Math.floor(Math.random() * rars.length)];
+    html += `<div class="scroll-card rarity-${r}"><i class="fas fa-film"></i></div>`;
+  }
+  track.innerHTML = html;
 }
 
 export async function openPack() {
@@ -48,7 +49,6 @@ export async function openPack() {
   const rs = $('resultState');
   const hint = $('packHint');
   S.open();
-  hideQuote();
   hint.style.opacity = '0';
   box.style.opacity = '0';
   box.style.transform = 'scale(.85) rotateY(90deg)';
@@ -72,6 +72,7 @@ export async function openPack() {
 
       const card = {
         id: Date.now().toString(),
+        serial: nextCardSerial(),
         movieId: movie.id.toString(),
         title: movie.title || movie.name || '—',
         poster_path: movie.poster_path,
@@ -87,16 +88,61 @@ export async function openPack() {
       addXP(XP_R[rar], card);
 
       const rc = $('resRarity');
-      rc.textContent = L().rn[rar];
-      rc.style.color = { common: '#aaa', gold: '#fbbf24', rainbow: '#f87171', unique: '#ff4444', diamond: '#60a5fa' }[rar];
-      $('resCard').innerHTML = cardHTML(card);
+      rc.textContent = '';
+      rc.style.color = RAR_COLOR[rar] || '#aaa';
+
       ps.style.display = 'none';
       rs.style.display = 'flex';
       setBodyRar(rar);
-      cardSound(rar);
-      if (rar === 'diamond') { fireworks(10); confetti(); } else if (rar === 'rainbow' || rar === 'unique') confetti();
-      checkQuests();
-      checkBadges();
+
+      // 1) Fast scroll-through animation
+      const mask = $('resScrollMask');
+      const track = $('resScrollTrack');
+      buildScrollStrip();
+      mask.style.display = 'block';
+      $('resCard').style.display = 'none';
+      track.style.transition = 'none';
+      track.style.transform = 'translateY(0)';
+      void track.offsetHeight;
+      track.style.transition = 'transform .65s cubic-bezier(.12,.85,.18,1)';
+      track.style.transform = `translateY(-${18 * 64 - 64}px)`;
+
+      setTimeout(() => {
+        // 2) Reveal the real card as a flip-card (cover-only front), settle into idle tilt
+        mask.style.display = 'none';
+        const resCardEl = $('resCard');
+        resCardEl.style.display = 'flex';
+
+        const poster = card.poster_path ? TMDB_IMG + card.poster_path :
+          `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(card.title.substring(0, 10))}`;
+        $('resFront').className = `pf rarity-${rar}`;
+        $('resBack').className = `pb rarity-${rar}`;
+        $('resFrontIn').innerHTML = `<img src="${poster}" alt="${card.title}">`;
+        const idTxt = '#' + String(card.serial).padStart(6, '0');
+        $('resBackIn').innerHTML = `<h3 style="margin-bottom:4px">${card.title}</h3>
+          <div class="rl" style="color:${RAR_COLOR[rar] || '#aaa'};margin-bottom:6px">${L().rn[rar]}</div>
+          <div class="card-id-tag">${L().cardIdLbl} ${idTxt}</div>`;
+
+        const flipper = $('resFlipper');
+        flipper.classList.remove('flipped');
+        resultSpinning = false;
+        cardSound(rar);
+
+        const tip = `${card.title.length > 26 ? card.title.slice(0, 25) + '…' : card.title} · ${L().rn[rar]} · ${idTxt}`;
+        resCardEl.dataset.tip = tip;
+        if (getCfg().tooltips) {
+          resCardEl.addEventListener('mouseenter', () => showCardTip(resCardEl, tip));
+          resCardEl.addEventListener('mouseleave', hideCardTip);
+        }
+
+        const fw = $('resFlipWrap');
+        fw.classList.toggle('auto-tilt', !!getCfg().autoTiltOn);
+        flipper.onclick = () => { if (resultSpinning) return; flipper.classList.toggle('flipped'); };
+
+        if (rar === 'diamond') { fireworks(10); confetti(); } else if (rar === 'rainbow' || rar === 'unique') confetti();
+        checkQuests();
+        checkBadges();
+      }, 680);
     } catch (e) { console.error(e); resetPack(); } finally { opening = false; }
   }, 400);
 }
@@ -112,7 +158,6 @@ function rndRar(weights) {
 }
 
 export function initPack() {
-  showQuote();
   $('packBox').addEventListener('click', openPack);
   $('closeResBtn').addEventListener('click', () => { S.close(); resetPack(); });
 }

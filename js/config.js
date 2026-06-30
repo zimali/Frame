@@ -10,22 +10,6 @@ export const BADGE_XP = [50, 150, 400, 1000, 2500];
 export const CIRC = 2 * Math.PI * 27;
 export const RAR_COLOR = { common: '#aaa', gold: '#fbbf24', rainbow: '#f87171', unique: '#ff4444', diamond: '#60a5fa' };
 
-export const QUOTES = [
-  { t: "Жизнь — как коробка шоколадных конфет.", a: "Форрест Гамп" },
-  { t: "Просто продолжай плыть.", a: "В поисках Немо" },
-  { t: "Да пребудет с тобой Сила.", a: "Звёздные войны" },
-  { t: "С большой силой — большая ответственность.", a: "Человек-паук" },
-  { t: "Надежда — лучшее, что есть.", a: "Побег из Шоушенка" },
-  { t: "Почему так серьёзно?", a: "Тёмный рыцарь" },
-  { t: "Я вернусь.", a: "Терминатор" },
-  { t: "Добро пожаловать в реальный мир.", a: "Матрица" },
-  { t: "Мечты — это планы Бога.", a: "Интерстеллар" },
-  { t: "Путешествие в тысячу миль — один шаг.", a: "Кунг-фу Панда" },
-  { t: "Не позволяй никому говорить, что ты не умеешь.", a: "В погоне за счастьем" },
-  { t: "Сегодня — это подарок.", a: "Кунг-фу Панда" },
-  { t: "Мы принимаем ту любовь, которую заслуживаем.", a: "Хорошо быть тихоней" }
-];
-
 export const LANGS = {
   ru: {
     open: 'Открыть', inv: 'Коллекция', shop: 'Магазин', info: 'Прогресс', sett: 'Настройки',
@@ -40,7 +24,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `Продать "${t}" за ${p} монет?`, settTitle: '⚙️ Настройки',
     newCards: 'Новые карточки!', ok: 'OK', diff: { easy: '🌱 Лёгкое', medium: '⚡ Среднее', hard: '🔥 Сложное' },
     noCoin: 'Недостаточно монет', badgeLocked: 'Не открыт', badgeMax: 'Максимум!', next: 'Далее',
-    finish: 'Поехали!', prev: '←', retut: '▶ Начать', changelog: '📋 Журнал обновлений'
+    finish: 'Поехали!', prev: '←', retut: '▶ Начать', changelog: '📋 Журнал обновлений',
+    tooltipsLbl: 'Подсказки названий', tooltipsSub: 'Показывать имя фильма при наведении',
+    selectMode: 'Выбрать', selected: n => `Выбрано: ${n}`,
+    addToFav: 'В избранное', removeFromFav: 'Убрать из избранного', deleteSel: 'Удалить',
+    addToCol: 'В коллекцию', cancelSel: 'Отмена', selAll: 'Все',
+    deleteConfirm: n => `Удалить ${n} карточек? Действие необратимо.`,
+    cardIdLbl: 'Карточка', autoTilt: 'Авто-наклон', spinHint: 'Вращать',
+    colTitle: 'Коллекции', colNew: 'Новая коллекция', colNamePh: 'Название коллекции...',
+    colCreate: 'Создать', colCost: n => `Стоимость: ${n} монет`, colMax: 'Достигнут лимит коллекций (4)',
+    colNoCoin: 'Недостаточно монет для создания коллекции', colDelete: 'Удалить коллекцию',
+    colDeleteConfirm: 'Удалить коллекцию? Карточки вернутся в «Все».', colRename: 'Переименовать',
+    colAll: 'Все', colChoose: 'Выберите коллекцию', colCreateNew: '+ Новая коллекция',
+    colMovedTo: n => `Перемещено в «${n}»`, vis: 'Визуал', bgLbl: 'Оттенок фона',
+    rotateBtn: 'Повернуть', selectBtn: 'Выбрать карты', colDeleted: 'Коллекция удалена',
+    colNameSaved: 'Название сохранено', langLbl: 'Язык'
   },
   en: {
     open: 'Open', inv: 'Collection', shop: 'Shop', info: 'Progress', sett: 'Settings',
@@ -55,7 +53,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `Sell "${t}" for ${p} coins?`, settTitle: '⚙️ Settings',
     newCards: 'New Cards!', ok: 'OK', diff: { easy: '🌱 Easy', medium: '⚡ Medium', hard: '🔥 Hard' },
     noCoin: 'Not enough coins', badgeLocked: 'Not unlocked', badgeMax: 'Max level!', next: 'Next',
-    finish: "Let's go!", prev: '←', retut: '▶ Start', changelog: '📋 Changelog'
+    finish: "Let's go!", prev: '←', retut: '▶ Start', changelog: '📋 Changelog',
+    tooltipsLbl: 'Title tooltips', tooltipsSub: 'Show movie name on hover',
+    selectMode: 'Select', selected: n => `Selected: ${n}`,
+    addToFav: 'Favourite', removeFromFav: 'Unfavourite', deleteSel: 'Delete',
+    addToCol: 'Add to collection', cancelSel: 'Cancel', selAll: 'All',
+    deleteConfirm: n => `Delete ${n} cards? This cannot be undone.`,
+    cardIdLbl: 'Card', autoTilt: 'Auto-tilt', spinHint: 'Spin',
+    colTitle: 'Collections', colNew: 'New collection', colNamePh: 'Collection name...',
+    colCreate: 'Create', colCost: n => `Cost: ${n} coins`, colMax: 'Collection limit reached (4)',
+    colNoCoin: 'Not enough coins to create a collection', colDelete: 'Delete collection',
+    colDeleteConfirm: 'Delete this collection? Cards will return to "All".', colRename: 'Rename',
+    colAll: 'All', colChoose: 'Choose a collection', colCreateNew: '+ New collection',
+    colMovedTo: n => `Moved to "${n}"`, vis: 'Visual', bgLbl: 'Background tint',
+    rotateBtn: 'Flip', selectBtn: 'Select cards', colDeleted: 'Collection deleted',
+    colNameSaved: 'Name saved', langLbl: 'Language'
   },
   es: {
     open: 'Abrir', inv: 'Colección', shop: 'Tienda', info: 'Progreso', sett: 'Ajustes',
@@ -70,7 +82,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `¿Vender "${t}" por ${p} monedas?`, settTitle: '⚙️ Ajustes',
     newCards: '¡Nuevas cartas!', ok: 'OK', diff: { easy: '🌱 Fácil', medium: '⚡ Medio', hard: '🔥 Difícil' },
     noCoin: 'Monedas insuficientes', badgeLocked: 'No desbloqueado', badgeMax: '¡Nivel máximo!', next: 'Siguiente',
-    finish: '¡Empezar!', prev: '←', retut: '▶ Empezar', changelog: '📋 Novedades'
+    finish: '¡Empezar!', prev: '←', retut: '▶ Empezar', changelog: '📋 Novedades',
+    tooltipsLbl: 'Sugerencias de título', tooltipsSub: 'Mostrar nombre al pasar el cursor',
+    selectMode: 'Seleccionar', selected: n => `Seleccionadas: ${n}`,
+    addToFav: 'Favorito', removeFromFav: 'Quitar de favoritos', deleteSel: 'Eliminar',
+    addToCol: 'Añadir a colección', cancelSel: 'Cancelar', selAll: 'Todo',
+    deleteConfirm: n => `¿Eliminar ${n} cartas? Esta acción no se puede deshacer.`,
+    cardIdLbl: 'Carta', autoTilt: 'Auto-inclinación', spinHint: 'Girar',
+    colTitle: 'Colecciones', colNew: 'Nueva colección', colNamePh: 'Nombre de la colección...',
+    colCreate: 'Crear', colCost: n => `Costo: ${n} monedas`, colMax: 'Límite de colecciones alcanzado (4)',
+    colNoCoin: 'Monedas insuficientes para crear una colección', colDelete: 'Eliminar colección',
+    colDeleteConfirm: '¿Eliminar esta colección? Las cartas volverán a "Todo".', colRename: 'Renombrar',
+    colAll: 'Todo', colChoose: 'Elige una colección', colCreateNew: '+ Nueva colección',
+    colMovedTo: n => `Movido a "${n}"`, vis: 'Visual', bgLbl: 'Tono de fondo',
+    rotateBtn: 'Girar', selectBtn: 'Seleccionar cartas', colDeleted: 'Colección eliminada',
+    colNameSaved: 'Nombre guardado', langLbl: 'Idioma'
   },
   de: {
     open: 'Öffnen', inv: 'Sammlung', shop: 'Shop', info: 'Fortschritt', sett: 'Einstellungen',
@@ -85,7 +111,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `"${t}" für ${p} Münzen verkaufen?`, settTitle: '⚙️ Einstellungen',
     newCards: 'Neue Karten!', ok: 'OK', diff: { easy: '🌱 Leicht', medium: '⚡ Mittel', hard: '🔥 Schwer' },
     noCoin: 'Zu wenig Münzen', badgeLocked: 'Nicht freigeschaltet', badgeMax: 'Maximalstufe!', next: 'Weiter',
-    finish: "Los geht's!", prev: '←', retut: '▶ Start', changelog: '📋 Updates'
+    finish: "Los geht's!", prev: '←', retut: '▶ Start', changelog: '📋 Updates',
+    tooltipsLbl: 'Titel-Tooltips', tooltipsSub: 'Filmname bei Hover anzeigen',
+    selectMode: 'Auswählen', selected: n => `Ausgewählt: ${n}`,
+    addToFav: 'Favorit', removeFromFav: 'Favorit entfernen', deleteSel: 'Löschen',
+    addToCol: 'Zur Sammlung hinzufügen', cancelSel: 'Abbrechen', selAll: 'Alle',
+    deleteConfirm: n => `${n} Karten löschen? Dies kann nicht widerrufen werden.`,
+    cardIdLbl: 'Karte', autoTilt: 'Auto-Neigung', spinHint: 'Drehen',
+    colTitle: 'Sammlungen', colNew: 'Neue Sammlung', colNamePh: 'Sammlungsname...',
+    colCreate: 'Erstellen', colCost: n => `Kosten: ${n} Münzen`, colMax: 'Sammlungslimit erreicht (4)',
+    colNoCoin: 'Nicht genug Münzen für eine neue Sammlung', colDelete: 'Sammlung löschen',
+    colDeleteConfirm: 'Diese Sammlung löschen? Karten kehren zu "Alle" zurück.', colRename: 'Umbenennen',
+    colAll: 'Alle', colChoose: 'Sammlung wählen', colCreateNew: '+ Neue Sammlung',
+    colMovedTo: n => `Verschoben nach "${n}"`, vis: 'Visuell', bgLbl: 'Hintergrundfarbton',
+    rotateBtn: 'Drehen', selectBtn: 'Karten auswählen', colDeleted: 'Sammlung gelöscht',
+    colNameSaved: 'Name gespeichert', langLbl: 'Sprache'
   },
   fr: {
     open: 'Ouvrir', inv: 'Collection', shop: 'Boutique', info: 'Progrès', sett: 'Paramètres',
@@ -100,7 +140,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `Vendre "${t}" pour ${p} pièces ?`, settTitle: '⚙️ Paramètres',
     newCards: 'Nouvelles cartes !', ok: 'OK', diff: { easy: '🌱 Facile', medium: '⚡ Moyen', hard: '🔥 Difficile' },
     noCoin: 'Pas assez de pièces', badgeLocked: 'Pas débloqué', badgeMax: 'Niveau max !', next: 'Suivant',
-    finish: "C'est parti !", prev: '←', retut: '▶ Démarrer', changelog: '📋 Mises à jour'
+    finish: "C'est parti !", prev: '←', retut: '▶ Démarrer', changelog: '📋 Mises à jour',
+    tooltipsLbl: 'Infobulles de titre', tooltipsSub: 'Afficher le nom au survol',
+    selectMode: 'Sélectionner', selected: n => `Sélectionné : ${n}`,
+    addToFav: 'Favori', removeFromFav: 'Retirer des favoris', deleteSel: 'Supprimer',
+    addToCol: 'Ajouter à la collection', cancelSel: 'Annuler', selAll: 'Tous',
+    deleteConfirm: n => `Supprimer ${n} cartes ? Action irréversible.`,
+    cardIdLbl: 'Carte', autoTilt: 'Inclinaison auto', spinHint: 'Tourner',
+    colTitle: 'Collections', colNew: 'Nouvelle collection', colNamePh: 'Nom de la collection...',
+    colCreate: 'Créer', colCost: n => `Coût : ${n} pièces`, colMax: 'Limite de collections atteinte (4)',
+    colNoCoin: 'Pas assez de pièces pour créer une collection', colDelete: 'Supprimer la collection',
+    colDeleteConfirm: 'Supprimer cette collection ? Les cartes reviendront à "Tous".', colRename: 'Renommer',
+    colAll: 'Tous', colChoose: 'Choisir une collection', colCreateNew: '+ Nouvelle collection',
+    colMovedTo: n => `Déplacé vers "${n}"`, vis: 'Visuel', bgLbl: 'Teinte de fond',
+    rotateBtn: 'Retourner', selectBtn: 'Sélectionner des cartes', colDeleted: 'Collection supprimée',
+    colNameSaved: 'Nom enregistré', langLbl: 'Langue'
   },
   tr: {
     open: 'Aç', inv: 'Koleksiyon', shop: 'Mağaza', info: 'İlerleme', sett: 'Ayarlar',
@@ -115,7 +169,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `"${t}" satılsın mı? ${p} altın`, settTitle: '⚙️ Ayarlar',
     newCards: 'Yeni kartlar!', ok: 'Tamam', diff: { easy: '🌱 Kolay', medium: '⚡ Orta', hard: '🔥 Zor' },
     noCoin: 'Yetersiz altın', badgeLocked: 'Kilitli', badgeMax: 'Max seviye!', next: 'Sonraki',
-    finish: 'Başlayalım!', prev: '←', retut: '▶ Başlat', changelog: '📋 Güncellemeler'
+    finish: 'Başlayalım!', prev: '←', retut: '▶ Başlat', changelog: '📋 Güncellemeler',
+    tooltipsLbl: 'Başlık ipuçları', tooltipsSub: 'Üzerine gelince film adını göster',
+    selectMode: 'Seç', selected: n => `Seçili: ${n}`,
+    addToFav: 'Favorile', removeFromFav: 'Favoriden çıkar', deleteSel: 'Sil',
+    addToCol: 'Koleksiyona ekle', cancelSel: 'Vazgeç', selAll: 'Hepsi',
+    deleteConfirm: n => `${n} kart silinsin mi? Bu işlem geri alınamaz.`,
+    cardIdLbl: 'Kart', autoTilt: 'Otomatik eğim', spinHint: 'Döndür',
+    colTitle: 'Koleksiyonlar', colNew: 'Yeni koleksiyon', colNamePh: 'Koleksiyon adı...',
+    colCreate: 'Oluştur', colCost: n => `Maliyet: ${n} altın`, colMax: 'Koleksiyon sınırına ulaşıldı (4)',
+    colNoCoin: 'Koleksiyon oluşturmak için yetersiz altın', colDelete: 'Koleksiyonu sil',
+    colDeleteConfirm: 'Bu koleksiyon silinsin mi? Kartlar "Hepsi"ye dönecek.', colRename: 'Yeniden adlandır',
+    colAll: 'Hepsi', colChoose: 'Koleksiyon seç', colCreateNew: '+ Yeni koleksiyon',
+    colMovedTo: n => `"${n}" konumuna taşındı`, vis: 'Görsel', bgLbl: 'Arka plan tonu',
+    rotateBtn: 'Çevir', selectBtn: 'Kartları seç', colDeleted: 'Koleksiyon silindi',
+    colNameSaved: 'İsim kaydedildi', langLbl: 'Dil'
   },
   ja: {
     open: '開く', inv: 'コレクション', shop: 'ショップ', info: '進捗', sett: '設定',
@@ -130,7 +198,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `"${t}" を ${p} コインで売る?`, settTitle: '⚙️ 設定',
     newCards: '新しいカード!', ok: 'OK', diff: { easy: '🌱 簡単', medium: '⚡ 普通', hard: '🔥 難しい' },
     noCoin: 'コインが足りない', badgeLocked: '未解放', badgeMax: '最大レベル!', next: '次へ',
-    finish: '始めよう!', prev: '←', retut: '▶ 開始', changelog: '📋 変更履歴'
+    finish: '始めよう!', prev: '←', retut: '▶ 開始', changelog: '📋 変更履歴',
+    tooltipsLbl: 'タイトルツールチップ', tooltipsSub: 'ホバー時に映画名を表示',
+    selectMode: '選択', selected: n => `選択中: ${n}`,
+    addToFav: 'お気に入り', removeFromFav: 'お気に入り解除', deleteSel: '削除',
+    addToCol: 'コレクションに追加', cancelSel: 'キャンセル', selAll: 'すべて',
+    deleteConfirm: n => `${n}枚を削除しますか？元に戻せません。`,
+    cardIdLbl: 'カード', autoTilt: '自動チルト', spinHint: '回転',
+    colTitle: 'コレクション', colNew: '新しいコレクション', colNamePh: 'コレクション名...',
+    colCreate: '作成', colCost: n => `コスト: ${n} コイン`, colMax: 'コレクション上限に達しました (4)',
+    colNoCoin: 'コレクション作成にはコインが不足しています', colDelete: 'コレクションを削除',
+    colDeleteConfirm: 'このコレクションを削除しますか？カードは「すべて」に戻ります。', colRename: '名前を変更',
+    colAll: 'すべて', colChoose: 'コレクションを選択', colCreateNew: '+ 新しいコレクション',
+    colMovedTo: n => `「${n}」に移動しました`, vis: 'ビジュアル', bgLbl: '背景色合い',
+    rotateBtn: '反転', selectBtn: 'カードを選択', colDeleted: 'コレクションを削除しました',
+    colNameSaved: '名前を保存しました', langLbl: '言語'
   },
   zh: {
     open: '开包', inv: '收藏', shop: '商店', info: '进度', sett: '设置',
@@ -145,7 +227,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `出售 "${t}" 获得 ${p} 金币?`, settTitle: '⚙️ 设置',
     newCards: '新卡片!', ok: '确认', diff: { easy: '🌱 简单', medium: '⚡ 中等', hard: '🔥 困难' },
     noCoin: '金币不足', badgeLocked: '未解锁', badgeMax: '最高等级!', next: '下一步',
-    finish: '出发!', prev: '←', retut: '▶ 开始', changelog: '📋 更新日志'
+    finish: '出发!', prev: '←', retut: '▶ 开始', changelog: '📋 更新日志',
+    tooltipsLbl: '标题提示', tooltipsSub: '悬停时显示影片名称',
+    selectMode: '选择', selected: n => `已选: ${n}`,
+    addToFav: '收藏', removeFromFav: '取消收藏', deleteSel: '删除',
+    addToCol: '添加到收藏集', cancelSel: '取消', selAll: '全部',
+    deleteConfirm: n => `删除${n}张卡片？此操作无法撤销。`,
+    cardIdLbl: '卡片', autoTilt: '自动倾斜', spinHint: '旋转',
+    colTitle: '收藏集', colNew: '新建收藏集', colNamePh: '收藏集名称...',
+    colCreate: '创建', colCost: n => `花费：${n} 金币`, colMax: '已达到收藏集上限 (4)',
+    colNoCoin: '金币不足，无法创建收藏集', colDelete: '删除收藏集',
+    colDeleteConfirm: '删除该收藏集？卡片将返回"全部"。', colRename: '重命名',
+    colAll: '全部', colChoose: '选择收藏集', colCreateNew: '+ 新建收藏集',
+    colMovedTo: n => `已移动到"${n}"`, vis: '视觉', bgLbl: '背景色调',
+    rotateBtn: '翻转', selectBtn: '选择卡片', colDeleted: '收藏集已删除',
+    colNameSaved: '名称已保存', langLbl: '语言'
   },
   ar: {
     open: 'افتح', inv: 'المجموعة', shop: 'المتجر', info: 'التقدم', sett: 'الإعدادات',
@@ -160,7 +256,21 @@ export const LANGS = {
     sellConfirm: (t, p) => `بيع "${t}" مقابل ${p} عملة?`, settTitle: '⚙️ الإعدادات',
     newCards: 'بطاقات جديدة!', ok: 'موافق', diff: { easy: '🌱 سهل', medium: '⚡ متوسط', hard: '🔥 صعب' },
     noCoin: 'عملات غير كافية', badgeLocked: 'مقفل', badgeMax: 'أعلى مستوى!', next: 'التالي',
-    finish: 'لنبدأ!', prev: '←', retut: '▶ ابدأ', changelog: '📋 سجل التحديثات'
+    finish: 'لنبدأ!', prev: '←', retut: '▶ ابدأ', changelog: '📋 سجل التحديثات',
+    tooltipsLbl: 'تلميحات العنوان', tooltipsSub: 'إظهار اسم الفيلم عند التمرير',
+    selectMode: 'تحديد', selected: n => `المحدد: ${n}`,
+    addToFav: 'تفضيل', removeFromFav: 'إزالة من المفضلة', deleteSel: 'حذف',
+    addToCol: 'إضافة إلى المجموعة', cancelSel: 'إلغاء', selAll: 'الكل',
+    deleteConfirm: n => `حذف ${n} بطاقات؟ لا يمكن التراجع عن هذا الإجراء.`,
+    cardIdLbl: 'بطاقة', autoTilt: 'إميل تلقائي', spinHint: 'دوران',
+    colTitle: 'المجموعات', colNew: 'مجموعة جديدة', colNamePh: 'اسم المجموعة...',
+    colCreate: 'إنشاء', colCost: n => `التكلفة: ${n} عملة`, colMax: 'تم الوصول إلى الحد الأقصى للمجموعات (4)',
+    colNoCoin: 'عملات غير كافية لإنشاء مجموعة', colDelete: 'حذف المجموعة',
+    colDeleteConfirm: 'حذف هذه المجموعة؟ ستعود البطاقات إلى "الكل".', colRename: 'إعادة تسمية',
+    colAll: 'الكل', colChoose: 'اختر مجموعة', colCreateNew: '+ مجموعة جديدة',
+    colMovedTo: n => `تم النقل إلى "${n}"`, vis: 'المظهر', bgLbl: 'درجة لون الخلفية',
+    rotateBtn: 'قلب', selectBtn: 'تحديد البطاقات', colDeleted: 'تم حذف المجموعة',
+    colNameSaved: 'تم حفظ الاسم', langLbl: 'اللغة'
   },
   pt: {
     open: 'Abrir', inv: 'Coleção', shop: 'Loja', info: 'Progresso', sett: 'Configurações',
@@ -175,6 +285,20 @@ export const LANGS = {
     sellConfirm: (t, p) => `Vender "${t}" por ${p} moedas?`, settTitle: '⚙️ Configurações',
     newCards: 'Novas cartas!', ok: 'OK', diff: { easy: '🌱 Fácil', medium: '⚡ Médio', hard: '🔥 Difícil' },
     noCoin: 'Moedas insuficientes', badgeLocked: 'Não desbloqueado', badgeMax: 'Nível máximo!', next: 'Próximo',
-    finish: 'Vamos lá!', prev: '←', retut: '▶ Começar', changelog: '📋 Novidades'
+    finish: 'Vamos lá!', prev: '←', retut: '▶ Começar', changelog: '📋 Novidades',
+    tooltipsLbl: 'Dicas de título', tooltipsSub: 'Mostrar nome do filme ao passar o mouse',
+    selectMode: 'Selecionar', selected: n => `Selecionado: ${n}`,
+    addToFav: 'Favorito', removeFromFav: 'Remover dos favoritos', deleteSel: 'Excluir',
+    addToCol: 'Adicionar à coleção', cancelSel: 'Cancelar', selAll: 'Todos',
+    deleteConfirm: n => `Excluir ${n} cartas? Esta ação não pode ser desfeita.`,
+    cardIdLbl: 'Carta', autoTilt: 'Inclinação automática', spinHint: 'Girar',
+    colTitle: 'Coleções', colNew: 'Nova coleção', colNamePh: 'Nome da coleção...',
+    colCreate: 'Criar', colCost: n => `Custo: ${n} moedas`, colMax: 'Limite de coleções atingido (4)',
+    colNoCoin: 'Moedas insuficientes para criar uma coleção', colDelete: 'Excluir coleção',
+    colDeleteConfirm: 'Excluir esta coleção? As cartas voltarão para "Todos".', colRename: 'Renomear',
+    colAll: 'Todos', colChoose: 'Escolha uma coleção', colCreateNew: '+ Nova coleção',
+    colMovedTo: n => `Movido para "${n}"`, vis: 'Visual', bgLbl: 'Tom de fundo',
+    rotateBtn: 'Virar', selectBtn: 'Selecionar cartas', colDeleted: 'Coleção excluída',
+    colNameSaved: 'Nome salvo', langLbl: 'Idioma'
   }
 };

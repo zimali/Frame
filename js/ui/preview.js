@@ -1,7 +1,7 @@
 // js/ui/preview.js
-import { $, cardHTML } from '../utils.js';
+import { $, cardHTML, wireCardTooltips } from '../utils.js';
 import { TMDB_IMG, SELL_V, RAR_COLOR } from '../config.js';
-import { getInv, setInv, addCoins, incStat, saveAll, L } from '../state.js';
+import { getInv, setInv, addCoins, incStat, saveAll, L, getCfg, updateCfg } from '../state.js';
 import { S } from '../audio.js';
 import { renderInventory } from './inventory.js';
 import { fetchMovieDetails } from '../api.js';
@@ -9,7 +9,9 @@ import { checkQuests, checkBadges } from '../game.js';
 
 let prevCard = null;
 let spinning = false;
+let autoTilting = false;
 let scale = 1;
+let autoFlipTimer = null;
 
 export function showPreview(card) {
   if (!card) return;
@@ -20,13 +22,17 @@ export function showPreview(card) {
   const poster = card.poster_path ? TMDB_IMG + card.poster_path :
     `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent((card.title || '').substring(0, 10))}`;
 
-  const fi = $('pFrontIn');
-  const bi = $('pBackIn');
+  const fi = $('pFrontIn'); // cover face — image only, edge to edge
+  const bi = $('pBackIn');  // info face — title, rarity, description
   $('pFront').className = `pf rarity-${card.rarity}`;
   $('pBack').className = `pb rarity-${card.rarity}`;
 
-  fi.innerHTML = `<img src="${poster}" alt="${card.title}"><h3>${card.title}</h3><div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'}">${L().rn[card.rarity]}</div>`;
-  bi.innerHTML = `<h3 style="margin-bottom:8px">${card.title}</h3><p id="cardOv" style="color:#aaa;font-size:.7rem;line-height:1.5">...</p>`;
+  const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
+  fi.innerHTML = `<img src="${poster}" alt="${card.title}">`;
+  bi.innerHTML = `<h3 style="margin-bottom:4px">${card.title}</h3>
+    <div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'};margin-bottom:6px">${L().rn[card.rarity]}</div>
+    <p id="cardOv" style="color:#aaa;font-size:.7rem;line-height:1.5">...</p>
+    ${idTxt ? `<div class="card-id-tag">${L().cardIdLbl} ${idTxt}</div>` : ''}`;
 
   fetchMovieDetails(card.media_type, card.movieId).then(d => {
     const el = $('cardOv');
@@ -34,34 +40,65 @@ export function showPreview(card) {
   });
 
   const fl = $('flipper');
-  fl.classList.remove('flipped', 'spin');
+  clearTimeout(autoFlipTimer);
+  // Start resting on the info side, then auto-flip to reveal the cover.
+  fl.classList.add('flipped');
+  fl.classList.remove('spin');
+  fl.style.transition = 'none';
+  // Force layout so the "no transition" start state applies before we re-enable it
+  void fl.offsetHeight;
+  fl.style.transition = '';
+  autoFlipTimer = setTimeout(() => { fl.classList.remove('flipped'); }, 550);
+
   fl.onclick = e => { if (spinning || e.target.classList.contains('pclose')) return; fl.classList.toggle('flipped'); };
 
   $('pSpinBtn').className = 'p-btn icon-only';
-$('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
-$('pFavBtn').innerHTML = card.favorite ?
-  `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
-  `<i class="fas fa-heart"></i>`;
-$('pFavBtn').className = 'p-btn icon-only' + (card.favorite ? ' fav-on' : '');
+  $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+  $('pFavBtn').innerHTML = card.favorite ?
+    `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
+    `<i class="fas fa-heart"></i>`;
+  $('pFavBtn').className = 'p-btn icon-only' + (card.favorite ? ' fav-on' : '');
   $('scaleSlider').value = 1;
+
+  autoTilting = getCfg().autoTiltOn || false;
+  syncAutoTiltBtn();
+  applyAutoTilt();
 
   const fw = $('flipWrap');
   fw.onmousemove = null;
   fw.onmouseleave = null;
   fw.addEventListener('mousemove', e => {
-    if (spinning) return;
+    if (spinning || autoTilting) return;
     const r = fw.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     fw.style.transform = `perspective(900px) rotateX(${-y * 7}deg) rotateY(${x * 7}deg) scale(${scale})`;
   });
-  fw.addEventListener('mouseleave', () => { fw.style.transform = `scale(${scale})`; });
+  fw.addEventListener('mouseleave', () => { if (!autoTilting) fw.style.transform = `scale(${scale})`; });
 
   $('prevOv').classList.add('on');
 }
 
+function applyAutoTilt() {
+  const fw = $('flipWrap');
+  if (!fw) return;
+  if (autoTilting) {
+    fw.classList.add('auto-tilt');
+    fw.style.transform = `scale(${scale})`;
+  } else {
+    fw.classList.remove('auto-tilt');
+  }
+}
+
+function syncAutoTiltBtn() {
+  const btn = $('pTiltBtn');
+  if (!btn) return;
+  btn.className = 'p-btn icon-only' + (autoTilting ? ' spin-on' : '');
+}
+
 export function closePreview() {
   $('prevOv').classList.remove('on');
+  clearTimeout(autoFlipTimer);
   prevCard = null;
   spinning = false;
   const fl = $('flipper');
@@ -70,7 +107,7 @@ export function closePreview() {
 }
 
 export function initPreview() {
-    
+
   $('prevOv').addEventListener('click', e => { if (e.target === $('prevOv')) closePreview(); });
   $('pClose').addEventListener('click', closePreview);
 
@@ -80,15 +117,24 @@ export function initPreview() {
     spinning = !spinning;
     S.spin();
     if (spinning) {
-  fl.classList.remove('flipped');
-  fl.classList.add('spin');
-  $('pSpinBtn').className = 'p-btn icon-only spin-on';
-  $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
-} else {
-  fl.classList.remove('spin');
-  $('pSpinBtn').className = 'p-btn icon-only';
-  $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
-}
+      fl.classList.remove('flipped');
+      fl.classList.add('spin');
+      $('pSpinBtn').className = 'p-btn icon-only spin-on';
+      $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+    } else {
+      fl.classList.remove('spin');
+      $('pSpinBtn').className = 'p-btn icon-only';
+      $('pSpinBtn').innerHTML = `<i class="fas fa-rotate"></i>`;
+    }
+  });
+
+  const tiltBtn = $('pTiltBtn');
+  if (tiltBtn) tiltBtn.addEventListener('click', () => {
+    autoTilting = !autoTilting;
+    updateCfg({ autoTiltOn: autoTilting });
+    S.click();
+    syncAutoTiltBtn();
+    applyAutoTilt();
   });
 
   $('pFavBtn').addEventListener('click', () => {
@@ -101,9 +147,9 @@ export function initPreview() {
     setInv(inv);
     saveAll();
     $('pFavBtn').innerHTML = prevCard.favorite ?
-  `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
-  `<i class="fas fa-heart"></i>`;
-$('pFavBtn').className = 'p-btn icon-only' + (prevCard.favorite ? ' fav-on' : '');
+      `<i class="fas fa-heart" style="color:#fbbf24"></i>` :
+      `<i class="fas fa-heart"></i>`;
+    $('pFavBtn').className = 'p-btn icon-only' + (prevCard.favorite ? ' fav-on' : '');
     renderInventory($('searchInp').value.trim());
   });
 

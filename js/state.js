@@ -4,7 +4,7 @@ import { LANGS } from './config.js';
 // --- Load / persist ---
 const ls = localStorage;
 let cfg = JSON.parse(ls.getItem('brl_cfg') || '{}');
-cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 0, anim: true, fw: true, ...cfg };
+cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 160, tooltips: true, autoTiltOn: false, ...cfg };
 
 let inv = JSON.parse(ls.getItem('inv') || '[]');
 let prog = JSON.parse(ls.getItem('prog') || '{"lvl":0,"xp":0}');
@@ -23,6 +23,10 @@ let stats = {
 };
 let streak = parseInt(ls.getItem('streak') || '0');
 let playerName = ls.getItem('playerName') || '';
+let cardSerial = parseInt(ls.getItem('cardSerial') || '0');
+let collections = JSON.parse(ls.getItem('collections') || 'null') || [
+  { id: 'all', name: 'Все', deletable: false }
+];
 
 export function saveAll() {
   ls.setItem('inv', JSON.stringify(inv));
@@ -37,10 +41,12 @@ export function saveAll() {
   ls.setItem('playerName', playerName);
   ['packs', 'sells', 'buys'].forEach(k => ls.setItem('st_' + k, stats[k]));
   ls.setItem('streak', streak);
+  ls.setItem('cardSerial', cardSerial);
+  ls.setItem('collections', JSON.stringify(collections));
 }
 
 export function getState() {
-  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, cfg };
+  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, cfg, cardSerial, collections };
 }
 
 export function setState(newState) {
@@ -57,6 +63,8 @@ export function setState(newState) {
   if (newState.streak !== undefined) streak = newState.streak;
   if (newState.playerName !== undefined) playerName = newState.playerName;
   if (newState.cfg !== undefined) cfg = newState.cfg;
+  if (newState.cardSerial !== undefined) cardSerial = newState.cardSerial;
+  if (newState.collections !== undefined) collections = newState.collections;
   saveAll();
 }
 
@@ -111,10 +119,63 @@ export function hasCard(movieId, rarity) {
   return inv.some(c => c.movieId === movieId && c.rarity === rarity);
 }
 
+// --- Card serial numbers (global, sequential, never reused) ---
+export function nextCardSerial() {
+  cardSerial += 1;
+  saveAll();
+  return cardSerial;
+}
+
+// --- Collections ---
+export const MAX_COLLECTIONS = 4; // additional, on top of the permanent "Все"
+export const COLLECTION_COST = 1000;
+
+export function getCollections() { return collections; }
+
+export function createCollection(name) {
+  const extra = collections.filter(c => c.deletable).length;
+  if (extra >= MAX_COLLECTIONS) return { ok: false, reason: 'max' };
+  if (coins < COLLECTION_COST) return { ok: false, reason: 'coins' };
+  coins -= COLLECTION_COST;
+  const col = { id: 'col_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: name || 'Коллекция', deletable: true };
+  collections.push(col);
+  saveAll();
+  return { ok: true, collection: col };
+}
+
+export function renameCollection(id, name) {
+  const c = collections.find(x => x.id === id);
+  if (!c || !c.deletable) return false;
+  c.name = name;
+  saveAll();
+  return true;
+}
+
+export function deleteCollection(id) {
+  const c = collections.find(x => x.id === id);
+  if (!c || !c.deletable) return false;
+  collections = collections.filter(x => x.id !== id);
+  // Return cards to "all" (i.e. clear collectionId so they show up in Все again)
+  inv.forEach(card => { if (card.collectionId === id) delete card.collectionId; });
+  saveAll();
+  return true;
+}
+
+export function moveCardsToCollection(cardIds, collectionId) {
+  const idSet = new Set(cardIds);
+  inv.forEach(card => {
+    if (idSet.has(card.id)) {
+      if (collectionId === 'all') delete card.collectionId;
+      else card.collectionId = collectionId;
+    }
+  });
+  saveAll();
+}
+
 // --- Reset ---
 export function resetAll() {
   ['inv', 'prog', 'coins', 'lots', 'shopT', 'quests', 'qprog', 'bdgLvl',
    'lastReset', 'streak', 'streakDay', 'st_packs', 'st_sells', 'st_buys',
-   'playerName', 'tutDone'].forEach(k => ls.removeItem(k));
+   'playerName', 'tutDone', 'cardSerial', 'collections'].forEach(k => ls.removeItem(k));
   location.reload();
 }

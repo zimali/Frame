@@ -1,17 +1,25 @@
 // js/ui/inventory.js
-import { $, cardHTML, highlightText } from '../utils.js';
-import { getInv, L } from '../state.js';
+import { $, cardHTML, highlightText, wireCardTooltips } from '../utils.js';
+import { getInv, L, getCfg, getCollections } from '../state.js';
 import { showPreview } from './preview.js';
 import { S } from '../audio.js';
-import { getCfg } from '../state.js';
+import { isSelectMode, toggleCardSelected, getSelected, toggleSelectMode, onSelectionChange, renderSelectBar } from './selection.js';
 
 let sortMode = 'new';
 let rarFilter = 'all';
 let sugTimeout = null;
+let activeCollectionId = 'all';
+
+export function setActiveCollection(id) {
+  activeCollectionId = id;
+  renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
+}
+export function getActiveCollection() { return activeCollectionId; }
 
 export function renderInventory(query = '') {
   const inv = getInv();
   let filtered = query ? inv.filter(c => c.title.toLowerCase().includes(query.toLowerCase())) : inv.slice();
+  if (activeCollectionId !== 'all') filtered = filtered.filter(c => c.collectionId === activeCollectionId);
   if (rarFilter === 'favorite') filtered = filtered.filter(c => c.favorite);
   else if (rarFilter !== 'all') filtered = filtered.filter(c => c.rarity === rarFilter);
   if (sortMode === 'az') filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -24,23 +32,33 @@ export function renderInventory(query = '') {
   if (!filtered.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
 
-  grid.innerHTML = filtered.map(c => cardHTML(c)).join('');
+  const selMode = isSelectMode();
+  const selected = getSelected();
+  grid.innerHTML = filtered.map(c => cardHTML(c, { selectMode: selMode, selected: selected.has(c.id) })).join('');
   grid.querySelectorAll('.cw').forEach((el, idx) => {
     const card = filtered[idx];
     if (!card) return;
     el.dataset.id = card.id;
-    el.addEventListener('click', () => { S.click(); showPreview(card); });
-    const cfg = getCfg();
-    if (cfg.anim) {
-      el.addEventListener('mousemove', e => {
-        const r = el.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        el.style.transform = `perspective(450px) rotateX(${-y * 9}deg) rotateY(${x * 9}deg) translateY(-2px)`;
-      });
-      el.addEventListener('mouseleave', () => el.style.transform = '');
-    }
+    el.addEventListener('click', () => {
+      if (isSelectMode()) {
+        S.click();
+        toggleCardSelected(card.id);
+        el.classList.toggle('selected');
+        return;
+      }
+      S.click();
+      showPreview(card);
+    });
+    el.addEventListener('mousemove', e => {
+      if (isSelectMode()) return;
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(450px) rotateX(${-y * 9}deg) rotateY(${x * 9}deg) translateY(-2px)`;
+    });
+    el.addEventListener('mouseleave', () => el.style.transform = '');
   });
+  wireCardTooltips(grid, getCfg().tooltips);
 }
 
 function showSuggestions(query) {
@@ -105,6 +123,15 @@ export function initInventory() {
       renderInventory($('searchInp').value.trim());
     });
   });
+
+  const selBtn = $('selectModeBtn');
+  if (selBtn) selBtn.addEventListener('click', () => {
+    toggleSelectMode();
+    selBtn.classList.toggle('on', isSelectMode());
+    renderInventory($('searchInp').value.trim());
+  });
+
+  onSelectionChange(() => renderInventory($('searchInp').value.trim()));
 
   initSwipeScroll($('invFilterRow'));
 

@@ -1,7 +1,7 @@
 // js/ui/shop.js
-import { $ } from '../utils.js';
+import { $, cardHTML, wireCardTooltips } from '../utils.js';
 import { LOT_W, XP_R } from '../config.js';
-import { getLots, setLots, getCoins, setCoins, getShopT, setShopT, pushInv, incStat, saveAll, L, hasCard } from '../state.js';
+import { getLots, setLots, getCoins, setCoins, getShopT, setShopT, pushInv, incStat, saveAll, L, hasCard, nextCardSerial, getCfg } from '../state.js';
 import { addXP } from '../game.js';
 import { S, cardSound } from '../audio.js';
 import { getCandidates } from '../api.js';
@@ -97,6 +97,7 @@ export async function buyLot(lot) {
     if (movie) {
       const card = {
         id: Date.now().toString() + Math.random(),
+        serial: nextCardSerial(),
         movieId: movie.id.toString(),
         title: movie.title || movie.name || '—',
         poster_path: movie.poster_path,
@@ -135,18 +136,10 @@ function showPurchaseOverlay(cards) {
     el.className = 'pur-card';
     el.innerHTML = cardHTML(c);
     cont.appendChild(el);
+    wireCardTooltips(el, getCfg().tooltips);
     setTimeout(() => el.classList.add('show'), (i + 1) * 180 + 60);
     if (c.rarity === 'diamond') setTimeout(() => fireworks(4), (i + 1) * 180 + 250);
   });
-}
-
-function cardHTML(card) {
-  const t = card.title || '—';
-  const po = card.poster_path ?
-    `https://image.tmdb.org/t/p/w500${card.poster_path}` :
-    `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, 12))}`;
-  const rar = card.rarity || 'common';
-  return `<div class="cw rarity-${rar}"><div class="ci"><img src="${po}" alt="${t}" loading="lazy"><div class="ct">${t}</div><div class="rl">${L().rn[rar] || rar}</div></div></div>`;
 }
 
 export function updateShopUI() {
