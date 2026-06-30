@@ -75,6 +75,7 @@
     <div class="pbar-row">
       <button class="p-btn icon-only" id="pSpinBtn" title="Вращать" aria-label="Вращать"><i class="fas fa-rotate"></i></button>
       <button class="p-btn icon-only" id="pFavBtn" title="В избранное" aria-label="В избранное"><i class="fas fa-heart"></i></button>
+      <button class="p-btn icon-only" id="pTiltBtn" title="Авто-наклон" aria-label="Авто-наклон"><i class="fas fa-cube"></i></button>
       <button class="p-btn sell-btn" id="pSellBtn"><i class="fas fa-coins"></i> <span id="pSellLbl">Продать</span></button>
     </div>
     <div class="scale-row">
@@ -92,15 +93,13 @@
     <div class="s-grp-ttl">Профиль</div>
     <div class="s-row"><span class="s-lbl">Имя игрока</span><input type="text" class="name-edit-field" id="settNameInput" maxlength="24" placeholder="Имя..."></div>
     <div class="s-grp-ttl" id="sLangGrp">Язык</div>
-    <div class="s-row"><span class="s-lbl" id="sLangLbl">Язык интерфейса</span><div class="lang-row" id="langRow"></div></div>
+    <div class="lang-row" id="langRow"></div>
     <div class="s-grp-ttl" id="sAudioGrp">Звук</div>
     <div class="s-row"><span class="s-lbl" id="sSfxLbl">Звуковые эффекты<span class="s-sub">Клики, карточки, покупки</span></span><input type="range" class="s-range" id="sfxVol" min="0" max="1" step="0.05"></div>
     <div class="s-row"><span class="s-lbl" id="sMusicLbl">Фоновая музыка<span class="s-sub">Джаз / Магазин</span></span><input type="range" class="s-range" id="musicVol" min="0" max="1" step="0.05"></div>
-    <div class="s-row"><span class="s-lbl" id="sMusicOnLbl">Музыка включена</span><label class="tog"><input type="checkbox" id="musicOn"><span class="tog-sl"></span></label></div>
     <div class="s-grp-ttl" id="sVisGrp">Визуал</div>
     <div class="s-row"><span class="s-lbl" id="sBgLbl">Оттенок фона</span><div class="swatches" id="swatches"></div></div>
-    <div class="s-row"><span class="s-lbl" id="sAnimLbl">Анимации тилта карточек</span><label class="tog"><input type="checkbox" id="animOn"><span class="tog-sl"></span></label></div>
-    <div class="s-row"><span class="s-lbl" id="sFwLbl">Фейерверки</span><label class="tog"><input type="checkbox" id="fwOn"><span class="tog-sl"></span></label></div>
+    <div class="s-row"><span class="s-lbl" id="sTooltipsLbl">Подсказки названий<span class="s-sub">Показывать имя фильма при наведении</span></span><label class="tog"><input type="checkbox" id="tooltipsOn"><span class="tog-sl"></span></label></div>
     <div class="s-grp-ttl" id="sDataGrp">Данные</div>
     <div class="s-row"><span class="s-lbl" id="sTutLbl">Туториал<span class="s-sub">Пройти заново</span></span><button class="l-btn" id="reTutBtn">▶ Начать</button></div>
     <div class="s-row"><span class="s-lbl" id="sResetLbl">Сбросить прогресс<span class="s-sub">Необратимо!</span></span><button class="reset-btn" id="resetBtn">Сброс</button></div>
@@ -140,7 +139,6 @@
   <div class="tab-pane active" id="tab-open">
     <div class="open-center">
       <div id="packState" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
-        <div class="quote-wrap" id="quoteWrap"><span class="q-text" id="qText"></span><span class="q-auth" id="qAuth"></span></div>
 <div class="pack-area">
   <div class="pack-box" id="packBox">
     <div class="frame-loader"></div>
@@ -150,7 +148,19 @@
       </div>
       <div id="resultState" style="display:none;flex-direction:column;align-items:center;gap:10px;width:100%;">
         <div class="result-rarity" id="resRarity"></div>
-        <div class="result-card-in-area"><div class="result-card-wrap" id="resCard"></div></div>
+        <div class="result-card-in-area">
+          <div class="result-scroll-mask" id="resScrollMask">
+            <div class="result-scroll-track" id="resScrollTrack"></div>
+          </div>
+          <div class="result-card-wrap" id="resCard" style="display:none">
+            <div class="flip-wrap" id="resFlipWrap">
+              <div class="flipper" id="resFlipper">
+                <div class="pf" id="resFront"><div class="pin" id="resFrontIn"></div></div>
+                <div class="pb" id="resBack"><div class="pin pin-back" id="resBackIn"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <button class="close-result-btn" id="closeResBtn" aria-label="Закрыть" title="Закрыть"><i class="fas fa-xmark"></i></button>
       </div>
     </div>
@@ -161,6 +171,7 @@
     <div class="inv-filters">
       <div class="search-row" style="position:relative;">
         <div class="search-box"><i class="fas fa-magnifying-glass"></i><input type="text" id="searchInp" placeholder="" autocomplete="off" aria-label="Поиск"></div>
+        <button class="select-mode-btn" id="selectModeBtn" title="Выбрать карты" aria-label="Выбрать карты"><i class="fas fa-check-double"></i></button>
         <div id="searchSuggestions"></div>
       </div>
       <div class="filter-row" id="invFilterRow">
@@ -176,6 +187,7 @@
         <button class="chip" data-rar="diamond" id="rfDia" style="color:#60a5fa;">Алмаз</button>
         <button class="chip" data-rar="favorite" id="rfFav">♡ Изб.</button>
       </div>
+      <div class="filter-row" id="colChipsRow"></div>
     </div>
     <div class="inv-grid" id="invGrid"></div>
     <p class="empty" id="emptyMsg">Нет карточек</p>

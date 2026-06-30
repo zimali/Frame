@@ -1,7 +1,6 @@
 // js/ui/notifications.js
 import { $ } from '../utils.js';
 import { S } from '../audio.js';
-import { getCfg } from '../state.js';
 
 const ptcl = document.getElementById('ptcl');
 
@@ -29,8 +28,6 @@ export function confetti() {
 }
 
 export function fireworks(n = 4) {
-  const cfg = getCfg();
-  if (!cfg.fw) return;
   const colors = ['#fbbf24', '#ff4444', '#60a5fa', '#4ade80', '#c084fc', '#f87171', '#fff'];
   for (let f = 0; f < n; f++) {
     setTimeout(() => {

@@ -12,13 +12,22 @@ export function rndRar(weights) {
   return RARS[0];
 }
 
-export function cardHTML(card) {
+export function cardHTML(card, opts = {}) {
   const t = card.title || '—';
   const po = card.poster_path
     ? TMDB_IMG + card.poster_path
     : `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, 12))}`;
   const rar = card.rarity || 'common';
-  return `<div class="cw rarity-${rar}"><div class="ci"><img src="${po}" alt="${t}" loading="lazy"><div class="ct">${t}</div><div class="rl">${L().rn[rar] || rar}</div></div></div>`;
+  const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
+  const shortTitle = t.length > 26 ? t.slice(0, 25) + '…' : t;
+  const tip = `${shortTitle} · ${L().rn[rar] || rar}${idTxt ? ' · ' + idTxt : ''}`;
+  const selMode = opts.selectMode ? ' select-mode' : '';
+  const selOn = opts.selected ? ' selected' : '';
+  const fav = card.favorite ? '<i class="fas fa-heart card-fav-badge"></i>' : '';
+  return `<div class="cw rarity-${rar}${selMode}${selOn}" data-tip="${tip.replace(/"/g, '&quot;')}">
+    <div class="ci"><img src="${po}" alt="${t}" loading="lazy">${fav}</div>
+    <div class="card-select-dot"><i class="fas fa-check"></i></div>
+  </div>`;
 }
 
 export function setBodyRar(r) {
@@ -36,4 +45,51 @@ export function highlightText(text, query) {
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
   if (idx < 0) return text;
   return text.slice(0, idx) + '<strong>' + text.slice(idx, idx + query.length) + '</strong>' + text.slice(idx + query.length);
+}
+
+// --- Shared hover tooltip for card covers ---
+let tipEl = null;
+function ensureTipEl() {
+  if (tipEl) return tipEl;
+  tipEl = document.createElement('div');
+  tipEl.className = 'card-tip';
+  document.body.appendChild(tipEl);
+  return tipEl;
+}
+
+export function showCardTip(target, text) {
+  const el = ensureTipEl();
+  el.textContent = text;
+  el.classList.add('show');
+  positionCardTip(target);
+}
+
+export function positionCardTip(target) {
+  if (!tipEl || !tipEl.classList.contains('show')) return;
+  const r = target.getBoundingClientRect();
+  const tipW = tipEl.offsetWidth || 160;
+  let left = r.left + r.width / 2 - tipW / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tipW - 8));
+  let top = r.top - tipEl.offsetHeight - 10;
+  if (top < 4) top = r.bottom + 8;
+  tipEl.style.left = left + 'px';
+  tipEl.style.top = top + 'px';
+}
+
+export function hideCardTip() {
+  if (tipEl) tipEl.classList.remove('show');
+}
+
+// Attach hover/touch tooltip behaviour to a freshly-rendered grid of `.cw` cards.
+// Respects the tooltips setting; no-ops (and just removes any stray tip) when disabled.
+export function wireCardTooltips(container, enabled) {
+  if (!container) return;
+  if (!enabled) { hideCardTip(); return; }
+  container.querySelectorAll('.cw').forEach(el => {
+    const text = el.dataset.tip;
+    if (!text) return;
+    el.addEventListener('mouseenter', () => showCardTip(el, text));
+    el.addEventListener('mousemove', () => positionCardTip(el));
+    el.addEventListener('mouseleave', hideCardTip);
+  });
 }

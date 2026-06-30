@@ -1,10 +1,11 @@
 // js/main.js
 import { $, applyBgHue, setBodyRar } from './utils.js';
 import { getCfg, getLvl, getXp, getStreak, getPlayerName, L, saveAll } from './state.js';
-import { initAudio, resumeAudio, S } from './audio.js';
+import { initAudio, resumeAudio, S, setMusicType } from './audio.js';
 import { initNameScreen, updatePlayerNameUI, showNameScreen, hideNameScreen } from './ui/name.js';
 import { initPack, resetPack } from './ui/pack.js';
 import { initInventory, renderInventory } from './ui/inventory.js';
+import { initCollections, renderCollectionChips } from './ui/collections.js';
 import { initShop, updateShopUI, startShopTimer } from './ui/shop.js';
 import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI } from './ui/info.js';
 import { initPreview, closePreview } from './ui/preview.js';
@@ -55,6 +56,7 @@ function init() {
   initPreview();
   initSettings();
   initTutorial();
+  initCollections();
 
   // Info tab initial render
   initInfoTab();
@@ -71,7 +73,7 @@ function init() {
       const tab = this.dataset.tab;
       updateDocTitle(tab);
       if (tab === 'shop') { setMusicType('shop'); updateShopUI(); startShopTimer(); } else setMusicType('main');
-      if (tab === 'inv') renderInventory($('searchInp').value.trim());
+      if (tab === 'inv') { renderCollectionChips(); renderInventory($('searchInp').value.trim()); }
       if (tab === 'info') { updateLevel(); renderQuests(); updateDiamondBanner(); renderBadges(); updateStreakUI(); updatePlayerNameUI(); }
       if (tab === 'open') setBodyRar(null);
     });
@@ -119,6 +121,13 @@ function applyI18n() {
   $('rfFav').textContent = '♡ Изб.';
   $('purTitle').textContent = tx.newCards;
   $('purOk').textContent = tx.ok;
+  // Settings modal labels
+  $('sLangGrp').textContent = tx.langLbl;
+  $('sVisGrp').textContent = tx.vis;
+  $('sBgLbl').textContent = tx.bgLbl;
+  $('sTooltipsLbl').innerHTML = `${tx.tooltipsLbl}<span class="s-sub">${tx.tooltipsSub}</span>`;
+  $('selectModeBtn').title = tx.selectBtn;
+  $('selectModeBtn').setAttribute('aria-label', tx.selectBtn);
   updateLevel();
   renderQuests();
   updateDiamondBanner();
@@ -138,21 +147,7 @@ window._claimDiamond = function () {
     m.claimDiamond(() => {
       import('./ui/info.js').then(ui => {
         ui.updateDiamondBanner();
-        // Also trigger the diamond drop animation
-        import('./ui/pack.js').then(pack => {
-          // The diamond drop is triggered via the game module's claimDiamond
-          // which calls a callback. We need to actually show the drop.
-          // For now, we just update the UI.
-          // The actual drop is handled in the info module's claim button.
-        });
       });
     });
   });
-};
-
-// Re-apply i18n when settings change language
-const origOpenSettings = openSettings;
-openSettings = function () {
-  // Settings modal will call applyI18n on language change via the lang buttons
-  origOpenSettings();
 };
