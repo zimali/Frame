@@ -1,9 +1,11 @@
 // js/ui/selection.js
 import { $ } from '../utils.js';
-import { getInv, setInv, L, getCollections, moveCardsToCollection } from '../state.js';
+import { getInv, setInv, L, getCollections, moveCardsToCollection, addCoins, incStat } from '../state.js';
+import { SELL_V } from '../config.js';
 import { S } from '../audio.js';
 import { notify } from './notifications.js';
 import { renderInventory } from './inventory.js';
+import { checkQuests, checkBadges } from '../game.js';
 
 let active = false;
 let selected = new Set();
@@ -56,12 +58,12 @@ export function renderSelectBar() {
     <div class="select-actions">
       <button class="sel-act-btn" id="selFavBtn" ${n ? '' : 'disabled'} title="${L().addToFav}"><i class="fas fa-heart"></i></button>
       <button class="sel-act-btn" id="selColBtn" ${n ? '' : 'disabled'} title="${L().addToCol}"><i class="fas fa-layer-group"></i></button>
-      <button class="sel-act-btn danger" id="selDelBtn" ${n ? '' : 'disabled'} title="${L().deleteSel}"><i class="fas fa-trash"></i></button>
+      <button class="sel-act-btn danger" id="selSellBtn" ${n ? '' : 'disabled'} title="${L().sellSel}"><i class="fas fa-coins"></i></button>
       <button class="sel-act-btn" id="selCancelBtn" title="${L().cancelSel}"><i class="fas fa-xmark"></i></button>
     </div>`;
   $('selFavBtn').onclick = favoriteSelected;
   $('selColBtn').onclick = openCollectionPicker;
-  $('selDelBtn').onclick = deleteSelected;
+  $('selSellBtn').onclick = sellSelected;
   $('selCancelBtn').onclick = () => setSelectMode(false);
 }
 
@@ -76,17 +78,26 @@ function favoriteSelected() {
   S.fav();
   notify(allFav ? L().removeFromFav : L().addToFav, 'badge');
   renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
+  checkQuests();
+  checkBadges();
   setSelectMode(false);
 }
 
-function deleteSelected() {
+function sellSelected() {
   if (!selected.size) return;
-  const n = selected.size;
-  if (!confirm(L().deleteConfirm(n))) return;
-  const inv = getInv().filter(c => !selected.has(c.id));
-  setInv(inv);
+  const inv = getInv();
+  const toSell = inv.filter(c => selected.has(c.id));
+  const total = toSell.reduce((sum, c) => sum + (SELL_V[c.rarity] || 0), 0);
+  if (!confirm(L().sellSelConfirm(toSell.length, total))) return;
+  addCoins(total);
+  incStat('sells', toSell.length);
+  const remaining = inv.filter(c => !selected.has(c.id));
+  setInv(remaining);
   S.sell();
+  notify(L().sellSelDone(total), 'badge');
   renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
+  checkQuests();
+  checkBadges();
   setSelectMode(false);
 }
 

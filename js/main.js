@@ -7,7 +7,7 @@ import { initPack, resetPack } from './ui/pack.js';
 import { initInventory, renderInventory } from './ui/inventory.js';
 import { initCollections, renderCollectionChips } from './ui/collections.js';
 import { initShop, updateShopUI, startShopTimer } from './ui/shop.js';
-import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI } from './ui/info.js';
+import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI, initDiamondClaim } from './ui/info.js';
 import { initPreview, closePreview } from './ui/preview.js';
 import { initSettings, openSettings } from './ui/settings.js';
 import { initTutorial, openTutorial } from './ui/tutorial.js';
@@ -57,6 +57,7 @@ function init() {
   initSettings();
   initTutorial();
   initCollections();
+  initDiamondClaim();
 
   // Info tab initial render
   initInfoTab();
@@ -126,6 +127,7 @@ function applyI18n() {
   $('sVisGrp').textContent = tx.vis;
   $('sBgLbl').textContent = tx.bgLbl;
   $('sTooltipsLbl').innerHTML = `${tx.tooltipsLbl}<span class="s-sub">${tx.tooltipsSub}</span>`;
+  $('sAvatarLbl').textContent = tx.avatarLbl;
   $('selectModeBtn').title = tx.selectBtn;
   $('selectModeBtn').setAttribute('aria-label', tx.selectBtn);
   updateLevel();

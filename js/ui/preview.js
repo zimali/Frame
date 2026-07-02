@@ -48,7 +48,7 @@ export function showPreview(card) {
   // Force layout so the "no transition" start state applies before we re-enable it
   void fl.offsetHeight;
   fl.style.transition = '';
-  autoFlipTimer = setTimeout(() => { fl.classList.remove('flipped'); }, 550);
+  autoFlipTimer = setTimeout(() => { fl.classList.remove('flipped'); }, 160);
 
   fl.onclick = e => { if (spinning || e.target.classList.contains('pclose')) return; fl.classList.toggle('flipped'); };
 
@@ -151,6 +151,8 @@ export function initPreview() {
       `<i class="fas fa-heart"></i>`;
     $('pFavBtn').className = 'p-btn icon-only' + (prevCard.favorite ? ' fav-on' : '');
     renderInventory($('searchInp').value.trim());
+    checkQuests();
+    checkBadges();
   });
 
   $('pSellBtn').addEventListener('click', () => {

@@ -10,6 +10,8 @@ export const BADGE_XP = [50, 150, 400, 1000, 2500];
 export const CIRC = 2 * Math.PI * 27;
 export const RAR_COLOR = { common: '#aaa', gold: '#fbbf24', rainbow: '#f87171', unique: '#ff4444', diamond: '#60a5fa' };
 
+export const AVATARS = ['🎬', '🍿', '🎭', '👾', '🦊', '🐺', '🔮', '🌟', '🐉', '🃏'];
+
 export const LANGS = {
   ru: {
     open: 'Открыть', inv: 'Коллекция', shop: 'Магазин', info: 'Прогресс', sett: 'Настройки',
@@ -19,7 +21,7 @@ export const LANGS = {
     rn: { common: 'Обычная', gold: 'Золотая', rainbow: 'Радужная', unique: 'Уникальная', diamond: 'Алмазная' },
     coins: 'монет', shopRef: 'Обновление через', free: 'Бесплатно', buy: 'Купить', lotOf: 'Лот', cards: 'карточек',
     lvlTitle: 'Уровень игрока', questHdr: 'Ежедневные задания', dTitle: '💎 Прогресс до алмазной карточки',
-    dRight: 'Алмазная карта', dLabel: n => `${n} из 3`, claim: 'Получить алмазную', badgesHdr: 'Значки',
+    dRight: 'Алмазная карта', dLabel: n => `${n} из 3`, claim: 'Получить алмазную', ddCollect: 'Забрать в коллекцию', ddTitle: '✦ АЛМАЗНАЯ КАРТОЧКА ✦', badgesHdr: 'Значки',
     noCards: 'Нет карточек', lvlUp: '🎉 УРОВЕНЬ ПОВЫШЕН!', streakTitle: 'Стрик входов', streakSub: 'дней подряд',
     sellConfirm: (t, p) => `Продать "${t}" за ${p} монет?`, settTitle: '⚙️ Настройки',
     newCards: 'Новые карточки!', ok: 'OK', diff: { easy: '🌱 Лёгкое', medium: '⚡ Среднее', hard: '🔥 Сложное' },
@@ -30,6 +32,7 @@ export const LANGS = {
     addToFav: 'В избранное', removeFromFav: 'Убрать из избранного', deleteSel: 'Удалить',
     addToCol: 'В коллекцию', cancelSel: 'Отмена', selAll: 'Все',
     deleteConfirm: n => `Удалить ${n} карточек? Действие необратимо.`,
+    sellSel: 'Продать', sellSelConfirm: (n, v) => `Продать ${n} карт. за ${v} монет?`, sellSelDone: v => `Продано за ${v} монет`,
     cardIdLbl: 'Карточка', autoTilt: 'Авто-наклон', spinHint: 'Вращать',
     colTitle: 'Коллекции', colNew: 'Новая коллекция', colNamePh: 'Название коллекции...',
     colCreate: 'Создать', colCost: n => `Стоимость: ${n} монет`, colMax: 'Достигнут лимит коллекций (4)',
@@ -38,7 +41,7 @@ export const LANGS = {
     colAll: 'Все', colChoose: 'Выберите коллекцию', colCreateNew: '+ Новая коллекция',
     colMovedTo: n => `Перемещено в «${n}»`, vis: 'Визуал', bgLbl: 'Оттенок фона',
     rotateBtn: 'Повернуть', selectBtn: 'Выбрать карты', colDeleted: 'Коллекция удалена',
-    colNameSaved: 'Название сохранено', langLbl: 'Язык'
+    colNameSaved: 'Название сохранено', langLbl: 'Язык', avatarLbl: 'Иконка профиля'
   },
   en: {
     open: 'Open', inv: 'Collection', shop: 'Shop', info: 'Progress', sett: 'Settings',
@@ -48,7 +51,7 @@ export const LANGS = {
     rn: { common: 'Common', gold: 'Gold', rainbow: 'Rainbow', unique: 'Unique', diamond: 'Diamond' },
     coins: 'coins', shopRef: 'Resets in', free: 'Free', buy: 'Buy', lotOf: 'Lot', cards: 'cards',
     lvlTitle: 'Player Level', questHdr: 'Daily Quests', dTitle: '💎 Progress to Diamond Card',
-    dRight: 'Diamond Card', dLabel: n => `${n} of 3`, claim: 'Claim Diamond Card', badgesHdr: 'Badges',
+    dRight: 'Diamond Card', dLabel: n => `${n} of 3`, claim: 'Claim Diamond Card', ddCollect: 'Add to collection', ddTitle: '✦ DIAMOND CARD ✦', badgesHdr: 'Badges',
     noCards: 'No cards', lvlUp: '🎉 LEVEL UP!', streakTitle: 'Daily Streak', streakSub: 'days in a row',
     sellConfirm: (t, p) => `Sell "${t}" for ${p} coins?`, settTitle: '⚙️ Settings',
     newCards: 'New Cards!', ok: 'OK', diff: { easy: '🌱 Easy', medium: '⚡ Medium', hard: '🔥 Hard' },
@@ -59,6 +62,7 @@ export const LANGS = {
     addToFav: 'Favourite', removeFromFav: 'Unfavourite', deleteSel: 'Delete',
     addToCol: 'Add to collection', cancelSel: 'Cancel', selAll: 'All',
     deleteConfirm: n => `Delete ${n} cards? This cannot be undone.`,
+    sellSel: 'Sell', sellSelConfirm: (n, v) => `Sell ${n} cards for ${v} coins?`, sellSelDone: v => `Sold for ${v} coins`,
     cardIdLbl: 'Card', autoTilt: 'Auto-tilt', spinHint: 'Spin',
     colTitle: 'Collections', colNew: 'New collection', colNamePh: 'Collection name...',
     colCreate: 'Create', colCost: n => `Cost: ${n} coins`, colMax: 'Collection limit reached (4)',
@@ -67,7 +71,7 @@ export const LANGS = {
     colAll: 'All', colChoose: 'Choose a collection', colCreateNew: '+ New collection',
     colMovedTo: n => `Moved to "${n}"`, vis: 'Visual', bgLbl: 'Background tint',
     rotateBtn: 'Flip', selectBtn: 'Select cards', colDeleted: 'Collection deleted',
-    colNameSaved: 'Name saved', langLbl: 'Language'
+    colNameSaved: 'Name saved', langLbl: 'Language', avatarLbl: 'Profile icon'
   },
   es: {
     open: 'Abrir', inv: 'Colección', shop: 'Tienda', info: 'Progreso', sett: 'Ajustes',
@@ -77,7 +81,7 @@ export const LANGS = {
     rn: { common: 'Común', gold: 'Dorada', rainbow: 'Arcoíris', unique: 'Única', diamond: 'Diamante' },
     coins: 'monedas', shopRef: 'Renueva en', free: 'Gratis', buy: 'Comprar', lotOf: 'Lote', cards: 'cartas',
     lvlTitle: 'Nivel del jugador', questHdr: 'Misiones diarias', dTitle: '💎 Progreso a carta Diamante',
-    dRight: 'Carta Diamante', dLabel: n => `${n} de 3`, claim: 'Obtener Diamante', badgesHdr: 'Insignias',
+    dRight: 'Carta Diamante', dLabel: n => `${n} de 3`, claim: 'Obtener Diamante', ddCollect: 'Añadir a la colección', ddTitle: '✦ CARTA DIAMANTE ✦', badgesHdr: 'Insignias',
     noCards: 'Sin cartas', lvlUp: '🎉 ¡SUBISTE DE NIVEL!', streakTitle: 'Racha diaria', streakSub: 'días seguidos',
     sellConfirm: (t, p) => `¿Vender "${t}" por ${p} monedas?`, settTitle: '⚙️ Ajustes',
     newCards: '¡Nuevas cartas!', ok: 'OK', diff: { easy: '🌱 Fácil', medium: '⚡ Medio', hard: '🔥 Difícil' },
@@ -88,6 +92,7 @@ export const LANGS = {
     addToFav: 'Favorito', removeFromFav: 'Quitar de favoritos', deleteSel: 'Eliminar',
     addToCol: 'Añadir a colección', cancelSel: 'Cancelar', selAll: 'Todo',
     deleteConfirm: n => `¿Eliminar ${n} cartas? Esta acción no se puede deshacer.`,
+    sellSel: 'Vender', sellSelConfirm: (n, v) => `¿Vender ${n} cartas por ${v} monedas?`, sellSelDone: v => `Vendido por ${v} monedas`,
     cardIdLbl: 'Carta', autoTilt: 'Auto-inclinación', spinHint: 'Girar',
     colTitle: 'Colecciones', colNew: 'Nueva colección', colNamePh: 'Nombre de la colección...',
     colCreate: 'Crear', colCost: n => `Costo: ${n} monedas`, colMax: 'Límite de colecciones alcanzado (4)',
@@ -96,7 +101,7 @@ export const LANGS = {
     colAll: 'Todo', colChoose: 'Elige una colección', colCreateNew: '+ Nueva colección',
     colMovedTo: n => `Movido a "${n}"`, vis: 'Visual', bgLbl: 'Tono de fondo',
     rotateBtn: 'Girar', selectBtn: 'Seleccionar cartas', colDeleted: 'Colección eliminada',
-    colNameSaved: 'Nombre guardado', langLbl: 'Idioma'
+    colNameSaved: 'Nombre guardado', langLbl: 'Idioma', avatarLbl: 'Icono de perfil'
   },
   de: {
     open: 'Öffnen', inv: 'Sammlung', shop: 'Shop', info: 'Fortschritt', sett: 'Einstellungen',
@@ -106,7 +111,7 @@ export const LANGS = {
     rn: { common: 'Gewöhnlich', gold: 'Gold', rainbow: 'Regenbogen', unique: 'Einzigartig', diamond: 'Diamant' },
     coins: 'Münzen', shopRef: 'Neuladen in', free: 'Kostenlos', buy: 'Kaufen', lotOf: 'Paket', cards: 'Karten',
     lvlTitle: 'Spielerlevel', questHdr: 'Tagesaufgaben', dTitle: '💎 Fortschritt zur Diamantkarte',
-    dRight: 'Diamantkarte', dLabel: n => `${n} von 3`, claim: 'Diamantkarte holen', badgesHdr: 'Abzeichen',
+    dRight: 'Diamantkarte', dLabel: n => `${n} von 3`, claim: 'Diamantkarte holen', ddCollect: 'Zur Sammlung hinzufügen', ddTitle: '✦ DIAMANTKARTE ✦', badgesHdr: 'Abzeichen',
     noCards: 'Keine Karten', lvlUp: '🎉 LEVEL AUFGESTIEGEN!', streakTitle: 'Tages-Streak', streakSub: 'Tage in Folge',
     sellConfirm: (t, p) => `"${t}" für ${p} Münzen verkaufen?`, settTitle: '⚙️ Einstellungen',
     newCards: 'Neue Karten!', ok: 'OK', diff: { easy: '🌱 Leicht', medium: '⚡ Mittel', hard: '🔥 Schwer' },
@@ -117,6 +122,7 @@ export const LANGS = {
     addToFav: 'Favorit', removeFromFav: 'Favorit entfernen', deleteSel: 'Löschen',
     addToCol: 'Zur Sammlung hinzufügen', cancelSel: 'Abbrechen', selAll: 'Alle',
     deleteConfirm: n => `${n} Karten löschen? Dies kann nicht widerrufen werden.`,
+    sellSel: 'Verkaufen', sellSelConfirm: (n, v) => `${n} Karten für ${v} Münzen verkaufen?`, sellSelDone: v => `Für ${v} Münzen verkauft`,
     cardIdLbl: 'Karte', autoTilt: 'Auto-Neigung', spinHint: 'Drehen',
     colTitle: 'Sammlungen', colNew: 'Neue Sammlung', colNamePh: 'Sammlungsname...',
     colCreate: 'Erstellen', colCost: n => `Kosten: ${n} Münzen`, colMax: 'Sammlungslimit erreicht (4)',
@@ -125,7 +131,7 @@ export const LANGS = {
     colAll: 'Alle', colChoose: 'Sammlung wählen', colCreateNew: '+ Neue Sammlung',
     colMovedTo: n => `Verschoben nach "${n}"`, vis: 'Visuell', bgLbl: 'Hintergrundfarbton',
     rotateBtn: 'Drehen', selectBtn: 'Karten auswählen', colDeleted: 'Sammlung gelöscht',
-    colNameSaved: 'Name gespeichert', langLbl: 'Sprache'
+    colNameSaved: 'Name gespeichert', langLbl: 'Sprache', avatarLbl: 'Profilsymbol'
   },
   fr: {
     open: 'Ouvrir', inv: 'Collection', shop: 'Boutique', info: 'Progrès', sett: 'Paramètres',
@@ -135,7 +141,7 @@ export const LANGS = {
     rn: { common: 'Commun', gold: 'Or', rainbow: 'Arc-en-ciel', unique: 'Unique', diamond: 'Diamant' },
     coins: 'pièces', shopRef: 'Réinitialise dans', free: 'Gratuit', buy: 'Acheter', lotOf: 'Lot', cards: 'cartes',
     lvlTitle: 'Niveau joueur', questHdr: 'Quêtes quotidiennes', dTitle: '💎 Progression carte Diamant',
-    dRight: 'Carte Diamant', dLabel: n => `${n} sur 3`, claim: 'Obtenir Diamant', badgesHdr: 'Badges',
+    dRight: 'Carte Diamant', dLabel: n => `${n} sur 3`, claim: 'Obtenir Diamant', ddCollect: 'Ajouter à la collection', ddTitle: '✦ CARTE DIAMANT ✦', badgesHdr: 'Badges',
     noCards: 'Aucune carte', lvlUp: '🎉 NIVEAU SUPÉRIEUR!', streakTitle: 'Série journalière', streakSub: 'jours consécutifs',
     sellConfirm: (t, p) => `Vendre "${t}" pour ${p} pièces ?`, settTitle: '⚙️ Paramètres',
     newCards: 'Nouvelles cartes !', ok: 'OK', diff: { easy: '🌱 Facile', medium: '⚡ Moyen', hard: '🔥 Difficile' },
@@ -146,6 +152,7 @@ export const LANGS = {
     addToFav: 'Favori', removeFromFav: 'Retirer des favoris', deleteSel: 'Supprimer',
     addToCol: 'Ajouter à la collection', cancelSel: 'Annuler', selAll: 'Tous',
     deleteConfirm: n => `Supprimer ${n} cartes ? Action irréversible.`,
+    sellSel: 'Vendre', sellSelConfirm: (n, v) => `Vendre ${n} cartes pour ${v} pièces ?`, sellSelDone: v => `Vendu pour ${v} pièces`,
     cardIdLbl: 'Carte', autoTilt: 'Inclinaison auto', spinHint: 'Tourner',
     colTitle: 'Collections', colNew: 'Nouvelle collection', colNamePh: 'Nom de la collection...',
     colCreate: 'Créer', colCost: n => `Coût : ${n} pièces`, colMax: 'Limite de collections atteinte (4)',
@@ -154,7 +161,7 @@ export const LANGS = {
     colAll: 'Tous', colChoose: 'Choisir une collection', colCreateNew: '+ Nouvelle collection',
     colMovedTo: n => `Déplacé vers "${n}"`, vis: 'Visuel', bgLbl: 'Teinte de fond',
     rotateBtn: 'Retourner', selectBtn: 'Sélectionner des cartes', colDeleted: 'Collection supprimée',
-    colNameSaved: 'Nom enregistré', langLbl: 'Langue'
+    colNameSaved: 'Nom enregistré', langLbl: 'Langue', avatarLbl: 'Icône de profil'
   },
   tr: {
     open: 'Aç', inv: 'Koleksiyon', shop: 'Mağaza', info: 'İlerleme', sett: 'Ayarlar',
@@ -164,7 +171,7 @@ export const LANGS = {
     rn: { common: 'Yaygın', gold: 'Altın', rainbow: 'Gökkuşağı', unique: 'Eşsiz', diamond: 'Elmas' },
     coins: 'altın', shopRef: 'Yenileme', free: 'Ücretsiz', buy: 'Satın Al', lotOf: 'Paket', cards: 'kart',
     lvlTitle: 'Oyuncu Seviyesi', questHdr: 'Günlük Görevler', dTitle: '💎 Elmas Kart İlerlemesi',
-    dRight: 'Elmas Kart', dLabel: n => `${n} / 3`, claim: 'Elmas Kartı Al', badgesHdr: 'Rozetler',
+    dRight: 'Elmas Kart', dLabel: n => `${n} / 3`, claim: 'Elmas Kartı Al', ddCollect: 'Koleksiyona ekle', ddTitle: '✦ ELMAS KART ✦', badgesHdr: 'Rozetler',
     noCards: 'Kart yok', lvlUp: '🎉 SEVİYE ATLANDI!', streakTitle: 'Günlük Seri', streakSub: 'gün üst üste',
     sellConfirm: (t, p) => `"${t}" satılsın mı? ${p} altın`, settTitle: '⚙️ Ayarlar',
     newCards: 'Yeni kartlar!', ok: 'Tamam', diff: { easy: '🌱 Kolay', medium: '⚡ Orta', hard: '🔥 Zor' },
@@ -175,6 +182,7 @@ export const LANGS = {
     addToFav: 'Favorile', removeFromFav: 'Favoriden çıkar', deleteSel: 'Sil',
     addToCol: 'Koleksiyona ekle', cancelSel: 'Vazgeç', selAll: 'Hepsi',
     deleteConfirm: n => `${n} kart silinsin mi? Bu işlem geri alınamaz.`,
+    sellSel: 'Sat', sellSelConfirm: (n, v) => `${n} kart ${v} altına satılsın mı?`, sellSelDone: v => `${v} altına satıldı`,
     cardIdLbl: 'Kart', autoTilt: 'Otomatik eğim', spinHint: 'Döndür',
     colTitle: 'Koleksiyonlar', colNew: 'Yeni koleksiyon', colNamePh: 'Koleksiyon adı...',
     colCreate: 'Oluştur', colCost: n => `Maliyet: ${n} altın`, colMax: 'Koleksiyon sınırına ulaşıldı (4)',
@@ -183,7 +191,7 @@ export const LANGS = {
     colAll: 'Hepsi', colChoose: 'Koleksiyon seç', colCreateNew: '+ Yeni koleksiyon',
     colMovedTo: n => `"${n}" konumuna taşındı`, vis: 'Görsel', bgLbl: 'Arka plan tonu',
     rotateBtn: 'Çevir', selectBtn: 'Kartları seç', colDeleted: 'Koleksiyon silindi',
-    colNameSaved: 'İsim kaydedildi', langLbl: 'Dil'
+    colNameSaved: 'İsim kaydedildi', langLbl: 'Dil', avatarLbl: 'Profil simgesi'
   },
   ja: {
     open: '開く', inv: 'コレクション', shop: 'ショップ', info: '進捗', sett: '設定',
@@ -193,7 +201,7 @@ export const LANGS = {
     rn: { common: 'コモン', gold: 'ゴールド', rainbow: 'レインボー', unique: 'ユニーク', diamond: 'ダイヤモンド' },
     coins: 'コイン', shopRef: '更新まで', free: '無料', buy: '買う', lotOf: 'ロット', cards: '枚',
     lvlTitle: 'プレイヤーレベル', questHdr: 'デイリークエスト', dTitle: '💎 ダイヤモンドへの進捗',
-    dRight: 'ダイヤモンドカード', dLabel: n => `${n} / 3`, claim: 'ダイヤモンドを獲得', badgesHdr: 'バッジ',
+    dRight: 'ダイヤモンドカード', dLabel: n => `${n} / 3`, claim: 'ダイヤモンドを獲得', ddCollect: 'コレクションに追加', ddTitle: '✦ ダイヤモンドカード ✦', badgesHdr: 'バッジ',
     noCards: 'カードなし', lvlUp: '🎉 レベルアップ!', streakTitle: 'デイリーストリーク', streakSub: '日連続',
     sellConfirm: (t, p) => `"${t}" を ${p} コインで売る?`, settTitle: '⚙️ 設定',
     newCards: '新しいカード!', ok: 'OK', diff: { easy: '🌱 簡単', medium: '⚡ 普通', hard: '🔥 難しい' },
@@ -204,6 +212,7 @@ export const LANGS = {
     addToFav: 'お気に入り', removeFromFav: 'お気に入り解除', deleteSel: '削除',
     addToCol: 'コレクションに追加', cancelSel: 'キャンセル', selAll: 'すべて',
     deleteConfirm: n => `${n}枚を削除しますか？元に戻せません。`,
+    sellSel: '売却', sellSelConfirm: (n, v) => `${n}枚を${v}コインで売却しますか？`, sellSelDone: v => `${v}コインで売却しました`,
     cardIdLbl: 'カード', autoTilt: '自動チルト', spinHint: '回転',
     colTitle: 'コレクション', colNew: '新しいコレクション', colNamePh: 'コレクション名...',
     colCreate: '作成', colCost: n => `コスト: ${n} コイン`, colMax: 'コレクション上限に達しました (4)',
@@ -212,7 +221,7 @@ export const LANGS = {
     colAll: 'すべて', colChoose: 'コレクションを選択', colCreateNew: '+ 新しいコレクション',
     colMovedTo: n => `「${n}」に移動しました`, vis: 'ビジュアル', bgLbl: '背景色合い',
     rotateBtn: '反転', selectBtn: 'カードを選択', colDeleted: 'コレクションを削除しました',
-    colNameSaved: '名前を保存しました', langLbl: '言語'
+    colNameSaved: '名前を保存しました', langLbl: '言語', avatarLbl: 'プロフィールアイコン'
   },
   zh: {
     open: '开包', inv: '收藏', shop: '商店', info: '进度', sett: '设置',
@@ -222,7 +231,7 @@ export const LANGS = {
     rn: { common: '普通', gold: '黄金', rainbow: '彩虹', unique: '独特', diamond: '钻石' },
     coins: '金币', shopRef: '更新倒计时', free: '免费', buy: '购买', lotOf: '批次', cards: '张卡',
     lvlTitle: '玩家等级', questHdr: '每日任务', dTitle: '💎 钻石卡进度',
-    dRight: '钻石卡', dLabel: n => `${n} / 3`, claim: '领取钻石卡', badgesHdr: '徽章',
+    dRight: '钻石卡', dLabel: n => `${n} / 3`, claim: '领取钻石卡', ddCollect: '添加到收藏集', ddTitle: '✦ 钻石卡 ✦', badgesHdr: '徽章',
     noCards: '没有卡片', lvlUp: '🎉 升级了!', streakTitle: '每日连签', streakSub: '天连续',
     sellConfirm: (t, p) => `出售 "${t}" 获得 ${p} 金币?`, settTitle: '⚙️ 设置',
     newCards: '新卡片!', ok: '确认', diff: { easy: '🌱 简单', medium: '⚡ 中等', hard: '🔥 困难' },
@@ -233,6 +242,7 @@ export const LANGS = {
     addToFav: '收藏', removeFromFav: '取消收藏', deleteSel: '删除',
     addToCol: '添加到收藏集', cancelSel: '取消', selAll: '全部',
     deleteConfirm: n => `删除${n}张卡片？此操作无法撤销。`,
+    sellSel: '出售', sellSelConfirm: (n, v) => `以${v}金币出售${n}张卡片？`, sellSelDone: v => `已出售，获得${v}金币`,
     cardIdLbl: '卡片', autoTilt: '自动倾斜', spinHint: '旋转',
     colTitle: '收藏集', colNew: '新建收藏集', colNamePh: '收藏集名称...',
     colCreate: '创建', colCost: n => `花费：${n} 金币`, colMax: '已达到收藏集上限 (4)',
@@ -241,7 +251,7 @@ export const LANGS = {
     colAll: '全部', colChoose: '选择收藏集', colCreateNew: '+ 新建收藏集',
     colMovedTo: n => `已移动到"${n}"`, vis: '视觉', bgLbl: '背景色调',
     rotateBtn: '翻转', selectBtn: '选择卡片', colDeleted: '收藏集已删除',
-    colNameSaved: '名称已保存', langLbl: '语言'
+    colNameSaved: '名称已保存', langLbl: '语言', avatarLbl: '头像图标'
   },
   ar: {
     open: 'افتح', inv: 'المجموعة', shop: 'المتجر', info: 'التقدم', sett: 'الإعدادات',
@@ -251,7 +261,7 @@ export const LANGS = {
     rn: { common: 'عادي', gold: 'ذهبي', rainbow: 'قوس قزح', unique: 'فريد', diamond: 'ألماس' },
     coins: 'عملات', shopRef: 'التجديد خلال', free: 'مجاني', buy: 'شراء', lotOf: 'صفقة', cards: 'بطاقات',
     lvlTitle: 'مستوى اللاعب', questHdr: 'المهام اليومية', dTitle: '💎 تقدم البطاقة الماسية',
-    dRight: 'البطاقة الماسية', dLabel: n => `${n} من 3`, claim: 'احصل على الألماس', badgesHdr: 'الشارات',
+    dRight: 'البطاقة الماسية', dLabel: n => `${n} من 3`, claim: 'احصل على الألماس', ddCollect: 'إضافة إلى المجموعة', ddTitle: '✦ البطاقة الماسية ✦', badgesHdr: 'الشارات',
     noCards: 'لا بطاقات', lvlUp: '🎉 ارتقاء!', streakTitle: 'السلسلة اليومية', streakSub: 'أيام متتالية',
     sellConfirm: (t, p) => `بيع "${t}" مقابل ${p} عملة?`, settTitle: '⚙️ الإعدادات',
     newCards: 'بطاقات جديدة!', ok: 'موافق', diff: { easy: '🌱 سهل', medium: '⚡ متوسط', hard: '🔥 صعب' },
@@ -262,6 +272,7 @@ export const LANGS = {
     addToFav: 'تفضيل', removeFromFav: 'إزالة من المفضلة', deleteSel: 'حذف',
     addToCol: 'إضافة إلى المجموعة', cancelSel: 'إلغاء', selAll: 'الكل',
     deleteConfirm: n => `حذف ${n} بطاقات؟ لا يمكن التراجع عن هذا الإجراء.`,
+    sellSel: 'بيع', sellSelConfirm: (n, v) => `بيع ${n} بطاقات مقابل ${v} عملة؟`, sellSelDone: v => `تم البيع مقابل ${v} عملة`,
     cardIdLbl: 'بطاقة', autoTilt: 'إميل تلقائي', spinHint: 'دوران',
     colTitle: 'المجموعات', colNew: 'مجموعة جديدة', colNamePh: 'اسم المجموعة...',
     colCreate: 'إنشاء', colCost: n => `التكلفة: ${n} عملة`, colMax: 'تم الوصول إلى الحد الأقصى للمجموعات (4)',
@@ -270,7 +281,7 @@ export const LANGS = {
     colAll: 'الكل', colChoose: 'اختر مجموعة', colCreateNew: '+ مجموعة جديدة',
     colMovedTo: n => `تم النقل إلى "${n}"`, vis: 'المظهر', bgLbl: 'درجة لون الخلفية',
     rotateBtn: 'قلب', selectBtn: 'تحديد البطاقات', colDeleted: 'تم حذف المجموعة',
-    colNameSaved: 'تم حفظ الاسم', langLbl: 'اللغة'
+    colNameSaved: 'تم حفظ الاسم', langLbl: 'اللغة', avatarLbl: 'أيقونة الملف الشخصي'
   },
   pt: {
     open: 'Abrir', inv: 'Coleção', shop: 'Loja', info: 'Progresso', sett: 'Configurações',
@@ -280,7 +291,7 @@ export const LANGS = {
     rn: { common: 'Comum', gold: 'Ouro', rainbow: 'Arco-íris', unique: 'Único', diamond: 'Diamante' },
     coins: 'moedas', shopRef: 'Atualiza em', free: 'Grátis', buy: 'Comprar', lotOf: 'Lote', cards: 'cartas',
     lvlTitle: 'Nível do jogador', questHdr: 'Missões diárias', dTitle: '💎 Progresso carta Diamante',
-    dRight: 'Carta Diamante', dLabel: n => `${n} de 3`, claim: 'Obter Diamante', badgesHdr: 'Insígnias',
+    dRight: 'Carta Diamante', dLabel: n => `${n} de 3`, claim: 'Obter Diamante', ddCollect: 'Adicionar à coleção', ddTitle: '✦ CARTA DIAMANTE ✦', badgesHdr: 'Insígnias',
     noCards: 'Sem cartas', lvlUp: '🎉 SUBIU DE NÍVEL!', streakTitle: 'Sequência diária', streakSub: 'dias seguidos',
     sellConfirm: (t, p) => `Vender "${t}" por ${p} moedas?`, settTitle: '⚙️ Configurações',
     newCards: 'Novas cartas!', ok: 'OK', diff: { easy: '🌱 Fácil', medium: '⚡ Médio', hard: '🔥 Difícil' },
@@ -291,6 +302,7 @@ export const LANGS = {
     addToFav: 'Favorito', removeFromFav: 'Remover dos favoritos', deleteSel: 'Excluir',
     addToCol: 'Adicionar à coleção', cancelSel: 'Cancelar', selAll: 'Todos',
     deleteConfirm: n => `Excluir ${n} cartas? Esta ação não pode ser desfeita.`,
+    sellSel: 'Vender', sellSelConfirm: (n, v) => `Vender ${n} cartas por ${v} moedas?`, sellSelDone: v => `Vendido por ${v} moedas`,
     cardIdLbl: 'Carta', autoTilt: 'Inclinação automática', spinHint: 'Girar',
     colTitle: 'Coleções', colNew: 'Nova coleção', colNamePh: 'Nome da coleção...',
     colCreate: 'Criar', colCost: n => `Custo: ${n} moedas`, colMax: 'Limite de coleções atingido (4)',
@@ -299,6 +311,6 @@ export const LANGS = {
     colAll: 'Todos', colChoose: 'Escolha uma coleção', colCreateNew: '+ Nova coleção',
     colMovedTo: n => `Movido para "${n}"`, vis: 'Visual', bgLbl: 'Tom de fundo',
     rotateBtn: 'Virar', selectBtn: 'Selecionar cartas', colDeleted: 'Coleção excluída',
-    colNameSaved: 'Nome salvo', langLbl: 'Idioma'
+    colNameSaved: 'Nome salvo', langLbl: 'Idioma', avatarLbl: 'Ícone de perfil'
   }
 };

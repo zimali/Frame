@@ -128,7 +128,7 @@ export async function openPack() {
         resultSpinning = false;
         cardSound(rar);
 
-        const tip = `${card.title.length > 26 ? card.title.slice(0, 25) + '…' : card.title} · ${L().rn[rar]} · ${idTxt}`;
+        const tip = `${card.title} · ${L().rn[rar]} · ${idTxt}`;
         resCardEl.dataset.tip = tip;
         if (getCfg().tooltips) {
           resCardEl.addEventListener('mouseenter', () => showCardTip(resCardEl, tip));

@@ -19,8 +19,7 @@ export function cardHTML(card, opts = {}) {
     : `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, 12))}`;
   const rar = card.rarity || 'common';
   const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
-  const shortTitle = t.length > 26 ? t.slice(0, 25) + '…' : t;
-  const tip = `${shortTitle} · ${L().rn[rar] || rar}${idTxt ? ' · ' + idTxt : ''}`;
+  const tip = `${t} · ${L().rn[rar] || rar}${idTxt ? ' · ' + idTxt : ''}`;
   const selMode = opts.selectMode ? ' select-mode' : '';
   const selOn = opts.selected ? ' selected' : '';
   const fav = card.favorite ? '<i class="fas fa-heart card-fav-badge"></i>' : '';
