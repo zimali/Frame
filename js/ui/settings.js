@@ -3,7 +3,7 @@ import { $, applyBgHue } from '../utils.js';
 import { getCfg, updateCfg, saveAll, getPlayerName, setPlayerName, L, resetAll } from '../state.js';
 import { initAudio, resumeAudio, startMusic, stopMusic, updateMusicVol, S } from '../audio.js';
 import { openTutorial } from './tutorial.js';
-import { updatePlayerNameUI } from './name.js';
+import { updatePlayerNameUI, initSettingsAvatarPicker } from './name.js';
 import { renderInventory } from './inventory.js';
 
 const SWATCH_HUES = [
@@ -92,6 +92,7 @@ export function openSettings() {
   $('musicVol').value = cfg.musicVol;
   $('tooltipsOn').checked = cfg.tooltips;
   $('settNameInput').value = getPlayerName();
+  initSettingsAvatarPicker();
   $('settModal').classList.add('on');
 }
 

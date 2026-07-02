@@ -1,10 +1,11 @@
 // js/ui/info.js
-import { $ } from '../utils.js';
-import { getLvl, getXp, getStreak, getQuests, getQprog, getBdgLvl, getStats, getInv, L, setLvl, setXp, saveAll } from '../state.js';
-import { reqXP } from '../game.js';
+import { $, cardHTML, wireCardTooltips } from '../utils.js';
+import { getLvl, getXp, getStreak, getQuests, getQprog, getBdgLvl, getStats, getInv, L, setLvl, setXp, saveAll, pushInv, nextCardSerial, getCfg } from '../state.js';
+import { reqXP, claimDiamond } from '../game.js';
 import { BADGE_XP, CIRC } from '../config.js';
-import { S } from '../audio.js';
+import { S, cardSound } from '../audio.js';
 import { notify, confetti, fireworks } from './notifications.js';
+import { getCandidates } from '../api.js';
 
 const BDGS = [
   { id: 'packs', name: 'Коллекционер паков', icon: 'fa-box-open', color: '#60a5fa', thresholds: [10, 50, 150, 400, 1000], labels: ['Новичок', 'Любитель', 'Опытный', 'Ветеран', 'Легенда'], value: () => getStats().packs },
@@ -76,7 +77,7 @@ export function updateDiamondBanner() {
   $('dTitle').textContent = L().dTitle;
   $('claimBtn').textContent = L().claim;
   const btn = $('claimBtn');
-  if (done === 3 && !allClaimed) { btn.style.display = 'block'; } else { btn.style.display = 'none'; }
+  if (done === 3 && !allClaimed) { btn.style.display = 'inline-block'; } else { btn.style.display = 'none'; }
 }
 
 export function renderBadges() {
@@ -134,4 +135,54 @@ export function initInfoTab() {
   updateDiamondBanner();
   renderBadges();
   updateStreakUI();
+}
+
+// --- Diamond card claim ---
+export function initDiamondClaim() {
+  const btn = $('claimBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    S.click();
+    claimDiamond(async () => {
+      try {
+        const cand = await getCandidates();
+        if (!cand.length) { console.warn('No movie candidates available for diamond claim'); return; }
+        const movie = cand[Math.floor(Math.random() * cand.length)];
+        const card = {
+          id: Date.now().toString() + Math.random(),
+          serial: nextCardSerial(),
+          movieId: movie.id.toString(),
+          title: movie.title || movie.name || '—',
+          poster_path: movie.poster_path,
+          media_type: movie.media_type,
+          rarity: 'diamond',
+          addedAt: Date.now(),
+          origin: 'quest',
+          favorite: false
+        };
+        pushInv(card);
+        saveAll();
+        updateDiamondBanner();
+        showDiamondDrop(card);
+        cardSound('diamond');
+        fireworks(10);
+        confetti();
+      } catch (e) { console.error(e); }
+    });
+  });
+
+  $('ddClose').addEventListener('click', () => {
+    S.click();
+    $('diamondDropOv').classList.remove('on');
+  });
+}
+
+function showDiamondDrop(card) {
+  const wrap = $('ddCardWrap');
+  wrap.innerHTML = cardHTML(card);
+  wireCardTooltips(wrap, getCfg().tooltips);
+  $('ddClose').textContent = L().ddCollect;
+  const title = document.querySelector('#diamondDropOv .dd-title');
+  if (title) title.textContent = L().ddTitle;
+  $('diamondDropOv').classList.add('on');
 }

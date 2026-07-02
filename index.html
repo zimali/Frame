@@ -38,6 +38,8 @@
   <div class="name-input-wrap">
     <input type="text" class="name-input" id="nameInput" placeholder="Твоё имя..." maxlength="24" autocomplete="off">
   </div>
+  <div class="avatar-pick-label" id="avatarPickLabel">Выбери иконку профиля</div>
+  <div class="avatar-pick-row" id="avatarPickRow"></div>
   <button class="name-start-btn" id="nameStartBtn" disabled>Начать →</button>
 </div>
 
@@ -92,6 +94,8 @@
     <div class="mhdr"><span class="mtitle" id="sTitle">⚙️ Настройки</span><button class="mclose" id="sClose">✕</button></div>
     <div class="s-grp-ttl">Профиль</div>
     <div class="s-row"><span class="s-lbl">Имя игрока</span><input type="text" class="name-edit-field" id="settNameInput" maxlength="24" placeholder="Имя..."></div>
+    <div class="s-sub-lbl" id="sAvatarLbl">Иконка профиля</div>
+    <div class="avatar-pick-row" id="settAvatarRow"></div>
     <div class="s-grp-ttl" id="sLangGrp">Язык</div>
     <div class="lang-row" id="langRow"></div>
     <div class="s-grp-ttl" id="sAudioGrp">Звук</div>
@@ -205,7 +209,7 @@
   <!-- INFO -->
   <div class="tab-pane" id="tab-info">
     <div class="player-name-card" id="playerNameCard">
-      <div class="player-name-left"><div class="player-avatar">👤</div><div><div class="player-name-txt" id="playerNameDisplay">—</div><div class="player-name-sub">Игрок</div></div></div>
+      <div class="player-name-left"><div class="player-avatar" id="playerAvatarDisplay">👤</div><div><div class="player-name-txt" id="playerNameDisplay">—</div><div class="player-name-sub">Игрок</div></div></div>
       <button class="name-edit-btn" id="openNameEditBtn"><i class="fas fa-pen"></i> Изменить</button>
     </div>
     <div class="lvl-card">
@@ -231,9 +235,8 @@
     <button class="nav-btn" data-tab="info" id="nInfo"><i class="fas fa-trophy"></i><span id="nInfoL">Прогресс</span></button>
     <button class="nav-btn" id="nSett"><i class="fas fa-sliders"></i><span id="nSettL">Настройки</span></button>
   </nav>
+  <div class="ver-tag" id="verTag">v0.7.0</div>
 </div>
-
-<div class="ver-tag" id="verTag">v0.7.0</div>
 
 <script type="module" src="js/main.js"></script>
 </body>

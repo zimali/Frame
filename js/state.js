@@ -23,6 +23,7 @@ let stats = {
 };
 let streak = parseInt(ls.getItem('streak') || '0');
 let playerName = ls.getItem('playerName') || '';
+let playerAvatar = ls.getItem('playerAvatar') || '';
 let cardSerial = parseInt(ls.getItem('cardSerial') || '0');
 let collections = JSON.parse(ls.getItem('collections') || 'null') || [
   { id: 'all', name: 'Все', deletable: false }
@@ -39,6 +40,7 @@ export function saveAll() {
   ls.setItem('bdgLvl', JSON.stringify(bdgLvl));
   ls.setItem('brl_cfg', JSON.stringify(cfg));
   ls.setItem('playerName', playerName);
+  ls.setItem('playerAvatar', playerAvatar);
   ['packs', 'sells', 'buys'].forEach(k => ls.setItem('st_' + k, stats[k]));
   ls.setItem('streak', streak);
   ls.setItem('cardSerial', cardSerial);
@@ -46,7 +48,7 @@ export function saveAll() {
 }
 
 export function getState() {
-  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, cfg, cardSerial, collections };
+  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, playerAvatar, cfg, cardSerial, collections };
 }
 
 export function setState(newState) {
@@ -62,6 +64,7 @@ export function setState(newState) {
   if (newState.stats !== undefined) stats = newState.stats;
   if (newState.streak !== undefined) streak = newState.streak;
   if (newState.playerName !== undefined) playerName = newState.playerName;
+  if (newState.playerAvatar !== undefined) playerAvatar = newState.playerAvatar;
   if (newState.cfg !== undefined) cfg = newState.cfg;
   if (newState.cardSerial !== undefined) cardSerial = newState.cardSerial;
   if (newState.collections !== undefined) collections = newState.collections;
@@ -107,6 +110,8 @@ export function setStreak(v) { streak = v; saveAll(); }
 
 export function getPlayerName() { return playerName; }
 export function setPlayerName(v) { playerName = v; saveAll(); }
+export function getPlayerAvatar() { return playerAvatar; }
+export function setPlayerAvatar(v) { playerAvatar = v; saveAll(); }
 
 export function getCfg() { return cfg; }
 export function setCfg(v) { cfg = v; saveAll(); }
@@ -176,6 +181,6 @@ export function moveCardsToCollection(cardIds, collectionId) {
 export function resetAll() {
   ['inv', 'prog', 'coins', 'lots', 'shopT', 'quests', 'qprog', 'bdgLvl',
    'lastReset', 'streak', 'streakDay', 'st_packs', 'st_sells', 'st_buys',
-   'playerName', 'tutDone', 'cardSerial', 'collections'].forEach(k => ls.removeItem(k));
+   'playerName', 'playerAvatar', 'tutDone', 'cardSerial', 'collections'].forEach(k => ls.removeItem(k));
   location.reload();
 }
