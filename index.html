@@ -88,6 +88,21 @@
   </div>
 </div>
 
+<!-- ═══ CATALOG (DEX) OVERLAY ═══ -->
+<div class="catalog-ov" id="catalogOv">
+  <div class="catalog-hdr">
+    <span class="catalog-title" id="catalogTitleTxt">Каталог коллекции</span>
+    <button class="pclose" id="catalogClose" aria-label="Закрыть"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="catalog-progress" id="catalogProgress"></div>
+  <div class="catalog-type-tabs" id="catalogTypeTabs">
+    <button class="chip on" data-ctype="movie" id="catTabMovie">Фильмы</button>
+    <button class="chip" data-ctype="tv" id="catTabTv">Сериалы</button>
+    <button class="chip" data-ctype="game" id="catTabGame">Игры</button>
+  </div>
+  <div class="catalog-grid" id="catalogGrid"></div>
+</div>
+
 <!-- ═══ SETTINGS MODAL ═══ -->
 <div class="modal" id="settModal">
   <div class="modal-box">
@@ -142,6 +157,7 @@
   <!-- OPEN TAB -->
   <div class="tab-pane active" id="tab-open">
     <div class="open-center">
+      <button class="pack-type-indicator" id="packTypeIndicator" title="Долгое нажатие на «Открыть» — сменить тип"></button>
       <div id="packState" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;">
 <div class="pack-area">
   <div class="pack-box" id="packBox">
@@ -176,6 +192,7 @@
       <div class="search-row" style="position:relative;">
         <div class="search-box"><i class="fas fa-magnifying-glass"></i><input type="text" id="searchInp" placeholder="" autocomplete="off" aria-label="Поиск"></div>
         <button class="select-mode-btn" id="selectModeBtn" title="Выбрать карты" aria-label="Выбрать карты"><i class="fas fa-check-double"></i></button>
+        <button class="select-mode-btn" id="catalogBtn" title="Каталог" aria-label="Каталог"><i class="fas fa-book"></i></button>
         <div id="searchSuggestions"></div>
       </div>
       <div class="filter-row" id="invFilterRow">

@@ -181,6 +181,22 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 .card-tip{position:fixed;z-index:900;background:#111;border:1px solid #333;border-radius:10px;padding:7px 13px;font-size:.68rem;color:#fff;font-weight:600;white-space:normal;text-align:center;line-height:1.45;pointer-events:none;opacity:0;transition:opacity .12s;box-shadow:0 4px 18px rgba(0,0,0,.6);max-width:min(80vw,260px);width:max-content}
 .card-tip.show{opacity:1}
 .card-id-tag{display:inline-block;font-size:.6rem;color:#666;font-weight:700;letter-spacing:.5px;margin-top:4px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:3px 9px}
+.card-meta-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.meta-chip{font-size:.62rem;color:#999;background:#1b1b1b;border:1px solid #2a2a2a;border-radius:8px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.meta-chip i{color:#666;font-size:.58rem}
+/* --- Rarity badge: distinct icon per rarity, so tiers read without relying on color --- */
+.rar-badge{position:absolute;bottom:5px;right:5px;z-index:4;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.56rem;background:rgba(10,10,10,.75);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(2px)}
+.rar-badge-gold{color:#fbbf24;border-color:rgba(251,191,36,.5)}
+.rar-badge-rainbow{color:#f87171;border-color:rgba(248,113,113,.5)}
+.rar-badge-unique{color:#ff4444;border-color:rgba(255,68,68,.6)}
+.rar-badge-diamond{color:#60a5fa;border-color:rgba(96,165,250,.6);animation:rarBadgePulse 1.8s ease-in-out infinite}
+@keyframes rarBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,.5)}50%{box-shadow:0 0 0 4px rgba(96,165,250,0)}}
+.col-picker-item.active{background:#1e1e1e;color:#fff}
+.col-picker-item.active i{color:#fff}
+/* --- Pack type indicator (long-press on "Открыть") --- */
+.pack-type-indicator{background:#161616;border:1px solid #2a2a2a;color:#999;padding:6px 14px;border-radius:16px;font-size:.7rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s}
+.pack-type-indicator:hover{border-color:#555;color:#fff}
+.pack-type-indicator i{font-size:.72rem;color:#777}
 #tab-inv{gap:9px}
 .inv-filters{display:flex;flex-direction:column;gap:6px;position:relative}
 .filter-row {
@@ -243,6 +259,23 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
 .col-picker-item{background:none;border:none;color:#ddd;text-align:left;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:.78rem;display:flex;align-items:center;gap:8px;transition:background .12s}
 .col-picker-item:hover{background:#1e1e1e}
 .col-picker-item i{color:#666;font-size:.72rem;width:14px}
+.pack-type-pop{bottom:auto;top:56px;left:calc(var(--side-w) + (100% - var(--side-w))/2);transform:translateX(-50%) scale(.94)}
+.pack-type-pop.show{transform:translateX(-50%) scale(1)}
+
+/* --- Catalog / dex overlay --- */
+.catalog-ov{position:fixed;inset:0;background:#0a0a0a;z-index:850;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 16px}
+.catalog-ov.on{opacity:1;visibility:visible}
+.catalog-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0}
+.catalog-title{font-size:1rem;font-weight:800;color:#fff}
+.catalog-progress{font-size:.72rem;color:#888;margin-bottom:12px;flex-shrink:0}
+.catalog-type-tabs{display:flex;gap:8px;margin-bottom:14px;flex-shrink:0}
+.catalog-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding-bottom:20px;scrollbar-width:none}
+.catalog-grid::-webkit-scrollbar{display:none}
+.cat-item{position:relative;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:#141414;border:1px solid #232323}
+.cat-item.owned img{width:100%;height:100%;object-fit:cover;display:block}
+.cat-item.unknown{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px;background:repeating-linear-gradient(135deg,#111,#111 6px,#161616 6px,#161616 12px)}
+.cat-silhouette{width:34px;height:34px;border-radius:50%;background:#000;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;color:#3a3a3a;font-size:.9rem}
+.cat-unknown-name{font-size:.56rem;color:#444;text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* --- Collections drawer (long-press on Коллекция nav) --- */
 .col-drawer{position:fixed;inset:0;z-index:850;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
@@ -575,8 +608,11 @@ body.rb-diamond{background:linear-gradient(145deg,hsl(210,25%,6%),hsl(220,15%,8%
   .col-drawer-sheet{border-radius:24px;border-bottom:1px solid #222;max-width:480px;margin-bottom:0}
   .select-bar{bottom:24px}
   .ver-tag{position:absolute;bottom:auto;top:18px;right:22px;left:auto}
+  .catalog-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
+  .catalog-ov{padding:28px 36px}
 }
 @media(min-width:1300px){
   #app{max-width:1320px}
   .inv-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .catalog-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 }

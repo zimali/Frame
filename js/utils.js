@@ -1,5 +1,5 @@
 // js/utils.js
-import { RARS, RAR_COLOR, TMDB_IMG } from './config.js';
+import { RARS, RAR_COLOR, RAR_ICON, TMDB_IMG } from './config.js';
 import { L } from './state.js';
 
 export function rndRar(weights) {
@@ -12,19 +12,28 @@ export function rndRar(weights) {
   return RARS[0];
 }
 
+// RAWG (games) already returns full, absolute poster URLs; TMDB (movies/tv) returns
+// relative paths that need the base image host prefixed.
+export function getPosterUrl(card, fallbackSize = 12) {
+  if (!card.poster_path) {
+    const t = card.title || '—';
+    return `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, fallbackSize))}`;
+  }
+  return /^https?:\/\//.test(card.poster_path) ? card.poster_path : TMDB_IMG + card.poster_path;
+}
+
 export function cardHTML(card, opts = {}) {
   const t = card.title || '—';
-  const po = card.poster_path
-    ? TMDB_IMG + card.poster_path
-    : `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, 12))}`;
+  const po = getPosterUrl(card);
   const rar = card.rarity || 'common';
   const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
   const tip = `${t} · ${L().rn[rar] || rar}${idTxt ? ' · ' + idTxt : ''}`;
   const selMode = opts.selectMode ? ' select-mode' : '';
   const selOn = opts.selected ? ' selected' : '';
   const fav = card.favorite ? '<i class="fas fa-heart card-fav-badge"></i>' : '';
+  const rarIcon = RAR_ICON[rar] ? `<div class="rar-badge rar-badge-${rar}"><i class="fas ${RAR_ICON[rar]}"></i></div>` : '';
   return `<div class="cw rarity-${rar}${selMode}${selOn}" data-tip="${tip.replace(/"/g, '&quot;')}">
-    <div class="ci"><img src="${po}" alt="${t}" loading="lazy">${fav}</div>
+    <div class="ci"><img src="${po}" alt="${t}" loading="lazy">${fav}${rarIcon}</div>
     <div class="card-select-dot"><i class="fas fa-check"></i></div>
   </div>`;
 }
