@@ -4,7 +4,7 @@ import { LANGS } from './config.js';
 // --- Load / persist ---
 const ls = localStorage;
 let cfg = JSON.parse(ls.getItem('brl_cfg') || '{}');
-cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 160, tooltips: true, autoTiltOn: false, ...cfg };
+cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 160, tooltips: true, autoTiltOn: false, packType: 'movie', ...cfg };
 
 let inv = JSON.parse(ls.getItem('inv') || '[]');
 let prog = JSON.parse(ls.getItem('prog') || '{"lvl":0,"xp":0}');
@@ -28,6 +28,9 @@ let cardSerial = parseInt(ls.getItem('cardSerial') || '0');
 let collections = JSON.parse(ls.getItem('collections') || 'null') || [
   { id: 'all', name: 'Все', deletable: false }
 ];
+// Titles ever seen as pack candidates (not necessarily owned) — powers the collection catalog.
+let knownTitles = JSON.parse(ls.getItem('knownTitles') || '[]');
+const MAX_KNOWN_TITLES = 600;
 
 export function saveAll() {
   ls.setItem('inv', JSON.stringify(inv));
@@ -45,10 +48,11 @@ export function saveAll() {
   ls.setItem('streak', streak);
   ls.setItem('cardSerial', cardSerial);
   ls.setItem('collections', JSON.stringify(collections));
+  ls.setItem('knownTitles', JSON.stringify(knownTitles));
 }
 
 export function getState() {
-  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, playerAvatar, cfg, cardSerial, collections };
+  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, playerAvatar, cfg, cardSerial, collections, knownTitles };
 }
 
 export function setState(newState) {
@@ -68,6 +72,7 @@ export function setState(newState) {
   if (newState.cfg !== undefined) cfg = newState.cfg;
   if (newState.cardSerial !== undefined) cardSerial = newState.cardSerial;
   if (newState.collections !== undefined) collections = newState.collections;
+  if (newState.knownTitles !== undefined) knownTitles = newState.knownTitles;
   saveAll();
 }
 
@@ -120,8 +125,8 @@ export function updateCfg(updates) { Object.assign(cfg, updates); saveAll(); }
 export function getLang() { return cfg.lang; }
 export function L() { return LANGS[cfg.lang] || LANGS.ru; }
 
-export function hasCard(movieId, rarity) {
-  return inv.some(c => c.movieId === movieId && c.rarity === rarity);
+export function hasCard(movieId, rarity, mediaType) {
+  return inv.some(c => c.movieId === movieId && c.rarity === rarity && (mediaType === undefined || c.media_type === mediaType));
 }
 
 // --- Card serial numbers (global, sequential, never reused) ---
@@ -177,10 +182,35 @@ export function moveCardsToCollection(cardIds, collectionId) {
   saveAll();
 }
 
+// --- Pack type (movie / tv / game) ---
+export function getPackType() { return cfg.packType || 'movie'; }
+export function setPackType(t) { cfg.packType = t; saveAll(); }
+
+// --- Known titles (collection catalog / dex) ---
+// Records every candidate ever surfaced by a pack roll, not just the one kept —
+// this is what lets the catalog show "seen but not yet owned" entries.
+export function addKnownTitles(items, mediaType) {
+  const map = new Map(knownTitles.map(t => [`${t.media_type}:${t.id}`, t]));
+  items.forEach(it => {
+    const key = `${mediaType}:${it.id}`;
+    if (!map.has(key)) {
+      map.set(key, { id: it.id, title: it.title || it.name || '—', poster_path: it.poster_path, media_type: mediaType });
+    }
+  });
+  let merged = [...map.values()];
+  if (merged.length > MAX_KNOWN_TITLES) merged = merged.slice(merged.length - MAX_KNOWN_TITLES);
+  knownTitles = merged;
+  saveAll();
+}
+
+export function getKnownTitles(mediaType) {
+  return mediaType ? knownTitles.filter(t => t.media_type === mediaType) : knownTitles;
+}
+
 // --- Reset ---
 export function resetAll() {
   ['inv', 'prog', 'coins', 'lots', 'shopT', 'quests', 'qprog', 'bdgLvl',
    'lastReset', 'streak', 'streakDay', 'st_packs', 'st_sells', 'st_buys',
-   'playerName', 'playerAvatar', 'tutDone', 'cardSerial', 'collections'].forEach(k => ls.removeItem(k));
+   'playerName', 'playerAvatar', 'tutDone', 'cardSerial', 'collections', 'knownTitles'].forEach(k => ls.removeItem(k));
   location.reload();
 }

@@ -4,7 +4,9 @@ import { getCfg, getLvl, getXp, getStreak, getPlayerName, L, saveAll } from './s
 import { initAudio, resumeAudio, S, setMusicType } from './audio.js';
 import { initNameScreen, updatePlayerNameUI, showNameScreen, hideNameScreen } from './ui/name.js';
 import { initPack, resetPack } from './ui/pack.js';
+import { initPackTypePicker, updatePackTypeIndicator } from './ui/packtype.js';
 import { initInventory, renderInventory } from './ui/inventory.js';
+import { initCatalog } from './ui/catalog.js';
 import { initCollections, renderCollectionChips } from './ui/collections.js';
 import { initShop, updateShopUI, startShopTimer } from './ui/shop.js';
 import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI, initDiamondClaim } from './ui/info.js';
@@ -51,7 +53,9 @@ function init() {
   // Initialize modules
   initNameScreen();
   initPack();
+  initPackTypePicker();
   initInventory();
+  initCatalog();
   initShop();
   initPreview();
   initSettings();
@@ -128,6 +132,13 @@ function applyI18n() {
   $('sBgLbl').textContent = tx.bgLbl;
   $('sTooltipsLbl').innerHTML = `${tx.tooltipsLbl}<span class="s-sub">${tx.tooltipsSub}</span>`;
   $('sAvatarLbl').textContent = tx.avatarLbl;
+  updatePackTypeIndicator();
+  $('catalogTitleTxt').textContent = tx.catalogTitle;
+  $('catTabMovie').textContent = tx.packMovie;
+  $('catTabTv').textContent = tx.packTv;
+  $('catTabGame').textContent = tx.packGame;
+  $('catalogBtn').title = tx.catalogBtn;
+  $('catalogBtn').setAttribute('aria-label', tx.catalogBtn);
   $('selectModeBtn').title = tx.selectBtn;
   $('selectModeBtn').setAttribute('aria-label', tx.selectBtn);
   updateLevel();

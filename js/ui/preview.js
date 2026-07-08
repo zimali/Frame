@@ -1,6 +1,6 @@
 // js/ui/preview.js
-import { $, cardHTML, wireCardTooltips } from '../utils.js';
-import { TMDB_IMG, SELL_V, RAR_COLOR } from '../config.js';
+import { $, cardHTML, wireCardTooltips, getPosterUrl } from '../utils.js';
+import { SELL_V, RAR_COLOR, RAR_ICON } from '../config.js';
 import { getInv, setInv, addCoins, incStat, saveAll, L, getCfg, updateCfg } from '../state.js';
 import { S } from '../audio.js';
 import { renderInventory } from './inventory.js';
@@ -19,8 +19,7 @@ export function showPreview(card) {
   spinning = false;
   scale = 1;
 
-  const poster = card.poster_path ? TMDB_IMG + card.poster_path :
-    `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent((card.title || '').substring(0, 10))}`;
+  const poster = getPosterUrl(card, 10);
 
   const fi = $('pFrontIn'); // cover face — image only, edge to edge
   const bi = $('pBackIn');  // info face — title, rarity, description
@@ -28,15 +27,25 @@ export function showPreview(card) {
   $('pBack').className = `pb rarity-${card.rarity}`;
 
   const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
+  const rarIcon = RAR_ICON[card.rarity] ? `<i class="fas ${RAR_ICON[card.rarity]}"></i> ` : '';
   fi.innerHTML = `<img src="${poster}" alt="${card.title}">`;
   bi.innerHTML = `<h3 style="margin-bottom:4px">${card.title}</h3>
-    <div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'};margin-bottom:6px">${L().rn[card.rarity]}</div>
+    <div class="rl" style="color:${RAR_COLOR[card.rarity] || '#aaa'};margin-bottom:6px">${rarIcon}${L().rn[card.rarity]}</div>
+    <div id="cardMeta" class="card-meta-row"></div>
     <p id="cardOv" style="color:#aaa;font-size:.7rem;line-height:1.5">...</p>
     ${idTxt ? `<div class="card-id-tag">${L().cardIdLbl} ${idTxt}</div>` : ''}`;
 
   fetchMovieDetails(card.media_type, card.movieId).then(d => {
     const el = $('cardOv');
     if (el) el.textContent = d?.overview || '—';
+    const meta = $('cardMeta');
+    if (meta && d) {
+      const bits = [];
+      if (d.released) bits.push(`<span class="meta-chip"><i class="fas fa-calendar"></i> ${d.released}</span>`);
+      if (d.rating) bits.push(`<span class="meta-chip"><i class="fas fa-star"></i> ${d.rating}</span>`);
+      if (d.genres && d.genres.length) bits.push(`<span class="meta-chip">${d.genres.slice(0, 2).join(', ')}</span>`);
+      meta.innerHTML = bits.join('');
+    }
   });
 
   const fl = $('flipper');
