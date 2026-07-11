@@ -55,7 +55,7 @@ export const LANGS = {
     colAll: 'Все', colChoose: 'Выберите коллекцию', colCreateNew: '+ Новая коллекция',
     colMovedTo: n => `Перемещено в «${n}»`, vis: 'Визуал', bgLbl: 'Оттенок фона',
     rotateBtn: 'Повернуть', selectBtn: 'Выбрать карты', colDeleted: 'Коллекция удалена',
-    colNameSaved: 'Название сохранено', langLbl: 'Язык', avatarLbl: 'Иконка профиля', packMovie: 'Фильмы', packTv: 'Сериалы', packGame: 'Игры', packPickTitle: 'Что открываем?', catalogBtn: 'Каталог', catalogTitle: 'Каталог коллекции', catalogOwned: (n, t) => `Собрано ${n} из ${t}`, catalogUnknown: 'Ещё не встречалось', genreLbl: 'Жанр', releasedLbl: 'Год выхода', ratingLbl: 'Рейтинг'
+    colNameSaved: 'Название сохранено', langLbl: 'Язык', avatarLbl: 'Иконка профиля', packMovie: 'Фильмы', packTv: 'Сериалы', packGame: 'Игры', packPickTitle: 'Что открываем?', catalogBtn: 'Каталог', catalogTitle: 'Каталог коллекции', catalogOwned: (n, t) => `Собрано ${n} из ${t}`, catalogUnknown: 'Ещё не встречалось', genreLbl: 'Жанр', releasedLbl: 'Год выхода', ratingLbl: 'Рейтинг', catalogHint: 'Введи название карты, чтобы найти её', catalogNoMatch: 'Ничего не найдено', catalogUnowned: 'Ещё нет в коллекции'
   },
   en: {
     open: 'Open', inv: 'Collection', shop: 'Shop', info: 'Progress', sett: 'Settings',
@@ -85,7 +85,7 @@ export const LANGS = {
     colAll: 'All', colChoose: 'Choose a collection', colCreateNew: '+ New collection',
     colMovedTo: n => `Moved to "${n}"`, vis: 'Visual', bgLbl: 'Background tint',
     rotateBtn: 'Flip', selectBtn: 'Select cards', colDeleted: 'Collection deleted',
-    colNameSaved: 'Name saved', langLbl: 'Language', avatarLbl: 'Profile icon', packMovie: 'Movies', packTv: 'TV Shows', packGame: 'Games', packPickTitle: 'What to open?', catalogBtn: 'Catalog', catalogTitle: 'Collection catalog', catalogOwned: (n, t) => `Collected ${n} of ${t}`, catalogUnknown: 'Not seen yet', genreLbl: 'Genre', releasedLbl: 'Release year', ratingLbl: 'Rating'
+    colNameSaved: 'Name saved', langLbl: 'Language', avatarLbl: 'Profile icon', packMovie: 'Movies', packTv: 'TV Shows', packGame: 'Games', packPickTitle: 'What to open?', catalogBtn: 'Catalog', catalogTitle: 'Collection catalog', catalogOwned: (n, t) => `Collected ${n} of ${t}`, catalogUnknown: 'Not seen yet', genreLbl: 'Genre', releasedLbl: 'Release year', ratingLbl: 'Rating', catalogHint: 'Type a card name to find it', catalogNoMatch: 'No matches found', catalogUnowned: 'Not in your collection yet'
   },
   es: {
     open: 'Abrir', inv: 'Colección', shop: 'Tienda', info: 'Progreso', sett: 'Ajustes',
@@ -115,7 +115,7 @@ export const LANGS = {
     colAll: 'Todo', colChoose: 'Elige una colección', colCreateNew: '+ Nueva colección',
     colMovedTo: n => `Movido a "${n}"`, vis: 'Visual', bgLbl: 'Tono de fondo',
     rotateBtn: 'Girar', selectBtn: 'Seleccionar cartas', colDeleted: 'Colección eliminada',
-    colNameSaved: 'Nombre guardado', langLbl: 'Idioma', avatarLbl: 'Icono de perfil', packMovie: 'Películas', packTv: 'Series', packGame: 'Juegos', packPickTitle: '¿Qué abrimos?', catalogBtn: 'Catálogo', catalogTitle: 'Catálogo de colección', catalogOwned: (n, t) => `Coleccionado ${n} de ${t}`, catalogUnknown: 'Aún no visto', genreLbl: 'Género', releasedLbl: 'Año de lanzamiento', ratingLbl: 'Calificación'
+    colNameSaved: 'Nombre guardado', langLbl: 'Idioma', avatarLbl: 'Icono de perfil', packMovie: 'Películas', packTv: 'Series', packGame: 'Juegos', packPickTitle: '¿Qué abrimos?', catalogBtn: 'Catálogo', catalogTitle: 'Catálogo de colección', catalogOwned: (n, t) => `Coleccionado ${n} de ${t}`, catalogUnknown: 'Aún no visto', genreLbl: 'Género', releasedLbl: 'Año de lanzamiento', ratingLbl: 'Calificación', catalogHint: 'Escribe el nombre de una carta para buscarla', catalogNoMatch: 'Sin resultados', catalogUnowned: 'Aún no está en tu colección'
   },
   de: {
     open: 'Öffnen', inv: 'Sammlung', shop: 'Shop', info: 'Fortschritt', sett: 'Einstellungen',
@@ -145,7 +145,7 @@ export const LANGS = {
     colAll: 'Alle', colChoose: 'Sammlung wählen', colCreateNew: '+ Neue Sammlung',
     colMovedTo: n => `Verschoben nach "${n}"`, vis: 'Visuell', bgLbl: 'Hintergrundfarbton',
     rotateBtn: 'Drehen', selectBtn: 'Karten auswählen', colDeleted: 'Sammlung gelöscht',
-    colNameSaved: 'Name gespeichert', langLbl: 'Sprache', avatarLbl: 'Profilsymbol', packMovie: 'Filme', packTv: 'Serien', packGame: 'Spiele', packPickTitle: 'Was öffnen wir?', catalogBtn: 'Katalog', catalogTitle: 'Sammlungskatalog', catalogOwned: (n, t) => `${n} von ${t} gesammelt`, catalogUnknown: 'Noch nicht gesehen', genreLbl: 'Genre', releasedLbl: 'Erscheinungsjahr', ratingLbl: 'Bewertung'
+    colNameSaved: 'Name gespeichert', langLbl: 'Sprache', avatarLbl: 'Profilsymbol', packMovie: 'Filme', packTv: 'Serien', packGame: 'Spiele', packPickTitle: 'Was öffnen wir?', catalogBtn: 'Katalog', catalogTitle: 'Sammlungskatalog', catalogOwned: (n, t) => `${n} von ${t} gesammelt`, catalogUnknown: 'Noch nicht gesehen', genreLbl: 'Genre', releasedLbl: 'Erscheinungsjahr', ratingLbl: 'Bewertung', catalogHint: 'Kartennamen eingeben, um sie zu finden', catalogNoMatch: 'Keine Treffer', catalogUnowned: 'Noch nicht in deiner Sammlung'
   },
   fr: {
     open: 'Ouvrir', inv: 'Collection', shop: 'Boutique', info: 'Progrès', sett: 'Paramètres',
@@ -175,7 +175,7 @@ export const LANGS = {
     colAll: 'Tous', colChoose: 'Choisir une collection', colCreateNew: '+ Nouvelle collection',
     colMovedTo: n => `Déplacé vers "${n}"`, vis: 'Visuel', bgLbl: 'Teinte de fond',
     rotateBtn: 'Retourner', selectBtn: 'Sélectionner des cartes', colDeleted: 'Collection supprimée',
-    colNameSaved: 'Nom enregistré', langLbl: 'Langue', avatarLbl: 'Icône de profil', packMovie: 'Films', packTv: 'Séries', packGame: 'Jeux', packPickTitle: 'Que voulez-vous ouvrir ?', catalogBtn: 'Catalogue', catalogTitle: 'Catalogue de collection', catalogOwned: (n, t) => `${n} sur ${t} collectés`, catalogUnknown: 'Pas encore vu', genreLbl: 'Genre', releasedLbl: 'Année de sortie', ratingLbl: 'Note'
+    colNameSaved: 'Nom enregistré', langLbl: 'Langue', avatarLbl: 'Icône de profil', packMovie: 'Films', packTv: 'Séries', packGame: 'Jeux', packPickTitle: 'Que voulez-vous ouvrir ?', catalogBtn: 'Catalogue', catalogTitle: 'Catalogue de collection', catalogOwned: (n, t) => `${n} sur ${t} collectés`, catalogUnknown: 'Pas encore vu', genreLbl: 'Genre', releasedLbl: 'Année de sortie', ratingLbl: 'Note', catalogHint: 'Tapez le nom d\'une carte pour la trouver', catalogNoMatch: 'Aucun résultat', catalogUnowned: 'Pas encore dans votre collection'
   },
   tr: {
     open: 'Aç', inv: 'Koleksiyon', shop: 'Mağaza', info: 'İlerleme', sett: 'Ayarlar',
@@ -205,7 +205,7 @@ export const LANGS = {
     colAll: 'Hepsi', colChoose: 'Koleksiyon seç', colCreateNew: '+ Yeni koleksiyon',
     colMovedTo: n => `"${n}" konumuna taşındı`, vis: 'Görsel', bgLbl: 'Arka plan tonu',
     rotateBtn: 'Çevir', selectBtn: 'Kartları seç', colDeleted: 'Koleksiyon silindi',
-    colNameSaved: 'İsim kaydedildi', langLbl: 'Dil', avatarLbl: 'Profil simgesi', packMovie: 'Filmler', packTv: 'Diziler', packGame: 'Oyunlar', packPickTitle: 'Ne açalım?', catalogBtn: 'Katalog', catalogTitle: 'Koleksiyon kataloğu', catalogOwned: (n, t) => `${t} üzerinden ${n} toplandı`, catalogUnknown: 'Henüz görülmedi', genreLbl: 'Tür', releasedLbl: 'Çıkış yılı', ratingLbl: 'Puan'
+    colNameSaved: 'İsim kaydedildi', langLbl: 'Dil', avatarLbl: 'Profil simgesi', packMovie: 'Filmler', packTv: 'Diziler', packGame: 'Oyunlar', packPickTitle: 'Ne açalım?', catalogBtn: 'Katalog', catalogTitle: 'Koleksiyon kataloğu', catalogOwned: (n, t) => `${t} üzerinden ${n} toplandı`, catalogUnknown: 'Henüz görülmedi', genreLbl: 'Tür', releasedLbl: 'Çıkış yılı', ratingLbl: 'Puan', catalogHint: 'Bulmak için kart adını yaz', catalogNoMatch: 'Sonuç bulunamadı', catalogUnowned: 'Henüz koleksiyonunda yok'
   },
   ja: {
     open: '開く', inv: 'コレクション', shop: 'ショップ', info: '進捗', sett: '設定',
@@ -235,7 +235,7 @@ export const LANGS = {
     colAll: 'すべて', colChoose: 'コレクションを選択', colCreateNew: '+ 新しいコレクション',
     colMovedTo: n => `「${n}」に移動しました`, vis: 'ビジュアル', bgLbl: '背景色合い',
     rotateBtn: '反転', selectBtn: 'カードを選択', colDeleted: 'コレクションを削除しました',
-    colNameSaved: '名前を保存しました', langLbl: '言語', avatarLbl: 'プロフィールアイコン', packMovie: '映画', packTv: 'ドラマ', packGame: 'ゲーム', packPickTitle: '何を開く？', catalogBtn: 'カタログ', catalogTitle: 'コレクションカタログ', catalogOwned: (n, t) => `${t}件中${n}件収集済み`, catalogUnknown: 'まだ未発見', genreLbl: 'ジャンル', releasedLbl: '発売年', ratingLbl: '評価'
+    colNameSaved: '名前を保存しました', langLbl: '言語', avatarLbl: 'プロフィールアイコン', packMovie: '映画', packTv: 'ドラマ', packGame: 'ゲーム', packPickTitle: '何を開く？', catalogBtn: 'カタログ', catalogTitle: 'コレクションカタログ', catalogOwned: (n, t) => `${t}件中${n}件収集済み`, catalogUnknown: 'まだ未発見', genreLbl: 'ジャンル', releasedLbl: '発売年', ratingLbl: '評価', catalogHint: 'カード名を入力して検索', catalogNoMatch: '見つかりませんでした', catalogUnowned: 'まだコレクションにありません'
   },
   zh: {
     open: '开包', inv: '收藏', shop: '商店', info: '进度', sett: '设置',
@@ -265,7 +265,7 @@ export const LANGS = {
     colAll: '全部', colChoose: '选择收藏集', colCreateNew: '+ 新建收藏集',
     colMovedTo: n => `已移动到"${n}"`, vis: '视觉', bgLbl: '背景色调',
     rotateBtn: '翻转', selectBtn: '选择卡片', colDeleted: '收藏集已删除',
-    colNameSaved: '名称已保存', langLbl: '语言', avatarLbl: '头像图标', packMovie: '电影', packTv: '剧集', packGame: '游戏', packPickTitle: '打开什么？', catalogBtn: '图鉴', catalogTitle: '收藏图鉴', catalogOwned: (n, t) => `已收集 ${n}/${t}`, catalogUnknown: '尚未发现', genreLbl: '类型', releasedLbl: '发行年份', ratingLbl: '评分'
+    colNameSaved: '名称已保存', langLbl: '语言', avatarLbl: '头像图标', packMovie: '电影', packTv: '剧集', packGame: '游戏', packPickTitle: '打开什么？', catalogBtn: '图鉴', catalogTitle: '收藏图鉴', catalogOwned: (n, t) => `已收集 ${n}/${t}`, catalogUnknown: '尚未发现', genreLbl: '类型', releasedLbl: '发行年份', ratingLbl: '评分', catalogHint: '输入卡片名称进行搜索', catalogNoMatch: '未找到匹配项', catalogUnowned: '尚未收集'
   },
   ar: {
     open: 'افتح', inv: 'المجموعة', shop: 'المتجر', info: 'التقدم', sett: 'الإعدادات',
@@ -295,7 +295,7 @@ export const LANGS = {
     colAll: 'الكل', colChoose: 'اختر مجموعة', colCreateNew: '+ مجموعة جديدة',
     colMovedTo: n => `تم النقل إلى "${n}"`, vis: 'المظهر', bgLbl: 'درجة لون الخلفية',
     rotateBtn: 'قلب', selectBtn: 'تحديد البطاقات', colDeleted: 'تم حذف المجموعة',
-    colNameSaved: 'تم حفظ الاسم', langLbl: 'اللغة', avatarLbl: 'أيقونة الملف الشخصي', packMovie: 'أفلام', packTv: 'مسلسلات', packGame: 'ألعاب', packPickTitle: 'ماذا سنفتح؟', catalogBtn: 'الكتالوج', catalogTitle: 'كتالوج المجموعة', catalogOwned: (n, t) => `تم جمع ${n} من ${t}`, catalogUnknown: 'لم تظهر بعد', genreLbl: 'النوع', releasedLbl: 'سنة الإصدار', ratingLbl: 'التقييم'
+    colNameSaved: 'تم حفظ الاسم', langLbl: 'اللغة', avatarLbl: 'أيقونة الملف الشخصي', packMovie: 'أفلام', packTv: 'مسلسلات', packGame: 'ألعاب', packPickTitle: 'ماذا سنفتح؟', catalogBtn: 'الكتالوج', catalogTitle: 'كتالوج المجموعة', catalogOwned: (n, t) => `تم جمع ${n} من ${t}`, catalogUnknown: 'لم تظهر بعد', genreLbl: 'النوع', releasedLbl: 'سنة الإصدار', ratingLbl: 'التقييم', catalogHint: 'اكتب اسم البطاقة للبحث عنها', catalogNoMatch: 'لا توجد نتائج', catalogUnowned: 'ليست في مجموعتك بعد'
   },
   pt: {
     open: 'Abrir', inv: 'Coleção', shop: 'Loja', info: 'Progresso', sett: 'Configurações',
@@ -325,6 +325,6 @@ export const LANGS = {
     colAll: 'Todos', colChoose: 'Escolha uma coleção', colCreateNew: '+ Nova coleção',
     colMovedTo: n => `Movido para "${n}"`, vis: 'Visual', bgLbl: 'Tom de fundo',
     rotateBtn: 'Virar', selectBtn: 'Selecionar cartas', colDeleted: 'Coleção excluída',
-    colNameSaved: 'Nome salvo', langLbl: 'Idioma', avatarLbl: 'Ícone de perfil', packMovie: 'Filmes', packTv: 'Séries', packGame: 'Jogos', packPickTitle: 'O que abrir?', catalogBtn: 'Catálogo', catalogTitle: 'Catálogo da coleção', catalogOwned: (n, t) => `${n} de ${t} coletados`, catalogUnknown: 'Ainda não visto', genreLbl: 'Gênero', releasedLbl: 'Ano de lançamento', ratingLbl: 'Avaliação'
+    colNameSaved: 'Nome salvo', langLbl: 'Idioma', avatarLbl: 'Ícone de perfil', packMovie: 'Filmes', packTv: 'Séries', packGame: 'Jogos', packPickTitle: 'O que abrir?', catalogBtn: 'Catálogo', catalogTitle: 'Catálogo da coleção', catalogOwned: (n, t) => `${n} de ${t} coletados`, catalogUnknown: 'Ainda não visto', genreLbl: 'Gênero', releasedLbl: 'Ano de lançamento', ratingLbl: 'Avaliação', catalogHint: 'Digite o nome de uma carta para encontrá-la', catalogNoMatch: 'Nenhum resultado', catalogUnowned: 'Ainda não está na sua coleção'
   }
 };

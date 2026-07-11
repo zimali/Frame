@@ -1,5 +1,5 @@
 // js/ui/pack.js
-import { $, setBodyRar, wireCardTooltips, showCardTip, hideCardTip, getPosterUrl } from '../utils.js';
+import { $, setBodyRar, wireCardTooltips, showCardTip, hideCardTip, posterImgHTML } from '../utils.js';
 import { PACK_W, XP_R, RAR_COLOR, RAR_ICON } from '../config.js';
 import { pushInv, incStat, saveAll, L, hasCard, getInv, nextCardSerial, getCfg, getPackType, addKnownTitles } from '../state.js';
 import { addXP } from '../game.js';
@@ -115,11 +115,10 @@ export async function openPack() {
         const resCardEl = $('resCard');
         resCardEl.style.display = 'flex';
 
-        const poster = getPosterUrl(card, 10);
         const rarIcon = RAR_ICON[rar] ? `<i class="fas ${RAR_ICON[rar]}"></i> ` : '';
         $('resFront').className = `pf rarity-${rar}`;
         $('resBack').className = `pb rarity-${rar}`;
-        $('resFrontIn').innerHTML = `<img src="${poster}" alt="${card.title}">`;
+        $('resFrontIn').innerHTML = posterImgHTML(card);
         const idTxt = '#' + String(card.serial).padStart(6, '0');
         $('resBackIn').innerHTML = `<h3 style="margin-bottom:4px">${card.title}</h3>
           <div class="rl" style="color:${RAR_COLOR[rar] || '#aaa'};margin-bottom:6px">${rarIcon}${L().rn[rar]}</div>
@@ -132,7 +131,7 @@ export async function openPack() {
             const bits = [];
             if (d.released) bits.push(`<span class="meta-chip"><i class="fas fa-calendar"></i> ${d.released}</span>`);
             if (d.rating) bits.push(`<span class="meta-chip"><i class="fas fa-star"></i> ${d.rating}</span>`);
-            if (d.genres && d.genres.length) bits.push(`<span class="meta-chip">${d.genres.slice(0, 2).join(', ')}</span>`);
+            if (d.genres && d.genres.length) d.genres.slice(0, 2).forEach(g => bits.push(`<span class="meta-chip">${g}</span>`));
             meta.innerHTML = bits.join('');
           }
         });
