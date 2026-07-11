@@ -88,18 +88,30 @@
   </div>
 </div>
 
-<!-- ═══ CATALOG (DEX) OVERLAY ═══ -->
+<!-- ═══ CATALOG (SEARCH) OVERLAY ═══ -->
 <div class="catalog-ov" id="catalogOv">
   <div class="catalog-hdr">
     <span class="catalog-title" id="catalogTitleTxt">Каталог коллекции</span>
     <button class="pclose" id="catalogClose" aria-label="Закрыть"><i class="fas fa-xmark"></i></button>
   </div>
-  <div class="catalog-progress" id="catalogProgress"></div>
+  <div class="search-box catalog-search-box">
+    <i class="fas fa-magnifying-glass"></i>
+    <input type="text" id="catalogSearch" placeholder="" autocomplete="off">
+  </div>
   <div class="catalog-type-tabs" id="catalogTypeTabs">
     <button class="chip on" data-ctype="movie" id="catTabMovie">Фильмы</button>
     <button class="chip" data-ctype="tv" id="catTabTv">Сериалы</button>
     <button class="chip" data-ctype="game" id="catTabGame">Игры</button>
   </div>
+  <div class="catalog-type-tabs" id="catalogRarityChips">
+    <button class="chip on" data-crar="all" id="catRarAll">Все</button>
+    <button class="chip" data-crar="common" id="catRarCommon">Обыч.</button>
+    <button class="chip" data-crar="gold" id="catRarGold" style="color:#fbbf24;">Золото</button>
+    <button class="chip" data-crar="rainbow" id="catRarRain" style="color:#f87171;">Радуга</button>
+    <button class="chip" data-crar="unique" id="catRarUniq" style="color:#ff4444;">Уник.</button>
+    <button class="chip" data-crar="diamond" id="catRarDia" style="color:#60a5fa;">Алмаз</button>
+  </div>
+  <p class="empty" id="catalogEmpty"></p>
   <div class="catalog-grid" id="catalogGrid"></div>
 </div>
 

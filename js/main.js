@@ -137,6 +137,13 @@ function applyI18n() {
   $('catTabMovie').textContent = tx.packMovie;
   $('catTabTv').textContent = tx.packTv;
   $('catTabGame').textContent = tx.packGame;
+  $('catRarAll').textContent = tx.all;
+  $('catRarCommon').textContent = 'Обыч.';
+  $('catRarGold').textContent = tx.gold;
+  $('catRarRain').textContent = 'Радуга';
+  $('catRarUniq').textContent = 'Уник.';
+  $('catRarDia').textContent = 'Алмаз';
+  $('catalogSearch').placeholder = tx.catalogHint;
   $('catalogBtn').title = tx.catalogBtn;
   $('catalogBtn').setAttribute('aria-label', tx.catalogBtn);
   $('selectModeBtn').title = tx.selectBtn;

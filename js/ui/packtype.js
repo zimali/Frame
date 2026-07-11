@@ -70,7 +70,4 @@ export function initPackTypePicker() {
   navBtn.addEventListener('touchstart', start, { passive: true });
   navBtn.addEventListener('touchend', cancel);
   navBtn.addEventListener('touchmove', cancel);
-
-  const indicator = $('packTypeIndicator');
-  if (indicator) indicator.addEventListener('click', openPicker);
 }

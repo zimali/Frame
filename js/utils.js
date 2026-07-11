@@ -22,9 +22,21 @@ export function getPosterUrl(card, fallbackSize = 12) {
   return /^https?:\/\//.test(card.poster_path) ? card.poster_path : TMDB_IMG + card.poster_path;
 }
 
+// RAWG/FreeToGame-style game thumbnails are landscape (16:9), while the card grid is
+// portrait (2:3) like movie/tv posters. Forcing a cover-crop on a landscape image cuts
+// off the meaningful part of it, so games get a blurred-backdrop + full-image treatment
+// instead of a hard crop.
+export function posterImgHTML(card, extraClass = '') {
+  const po = getPosterUrl(card, 12);
+  const t = (card.title || '—').replace(/"/g, '&quot;');
+  if (card.media_type === 'game') {
+    return `<div class="game-cover-wrap"><div class="game-cover-bg" style="background-image:url('${po}')"></div><img class="game-cover-fg ${extraClass}" src="${po}" alt="${t}" loading="lazy"></div>`;
+  }
+  return `<img class="${extraClass}" src="${po}" alt="${t}" loading="lazy">`;
+}
+
 export function cardHTML(card, opts = {}) {
   const t = card.title || '—';
-  const po = getPosterUrl(card);
   const rar = card.rarity || 'common';
   const idTxt = card.serial ? '#' + String(card.serial).padStart(6, '0') : '';
   const tip = `${t} · ${L().rn[rar] || rar}${idTxt ? ' · ' + idTxt : ''}`;
@@ -33,7 +45,7 @@ export function cardHTML(card, opts = {}) {
   const fav = card.favorite ? '<i class="fas fa-heart card-fav-badge"></i>' : '';
   const rarIcon = RAR_ICON[rar] ? `<div class="rar-badge rar-badge-${rar}"><i class="fas ${RAR_ICON[rar]}"></i></div>` : '';
   return `<div class="cw rarity-${rar}${selMode}${selOn}" data-tip="${tip.replace(/"/g, '&quot;')}">
-    <div class="ci"><img src="${po}" alt="${t}" loading="lazy">${fav}${rarIcon}</div>
+    <div class="ci">${posterImgHTML(card)}${fav}${rarIcon}</div>
     <div class="card-select-dot"><i class="fas fa-check"></i></div>
   </div>`;
 }
