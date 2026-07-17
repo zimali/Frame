@@ -1,9 +1,8 @@
 // js/ui/settings.js
 import { $, applyBgHue } from '../utils.js';
-import { getCfg, updateCfg, saveAll, getPlayerName, setPlayerName, L, resetAll } from '../state.js';
-import { initAudio, resumeAudio, startMusic, stopMusic, updateMusicVol, S } from '../audio.js';
+import { getCfg, updateCfg, resetAll, L } from '../state.js';
+import { initAudio, resumeAudio, startMusic, updateMusicVol, S } from '../audio.js';
 import { openTutorial } from './tutorial.js';
-import { updatePlayerNameUI, initSettingsAvatarPicker } from './name.js';
 import { renderInventory } from './inventory.js';
 
 const SWATCH_HUES = [
@@ -91,18 +90,15 @@ export function openSettings() {
   $('sfxVol').value = cfg.sfxVol;
   $('musicVol').value = cfg.musicVol;
   $('tooltipsOn').checked = cfg.tooltips;
-  $('settNameInput').value = getPlayerName();
-  initSettingsAvatarPicker();
+  $('perfModeOn').checked = !!cfg.perfMode;
   $('settModal').classList.add('on');
 }
 
-export function initSettings() {
-  // Name save on change
-  $('settNameInput').addEventListener('change', function () {
-    const n = this.value.trim();
-    if (n) { setPlayerName(n); updatePlayerNameUI(); saveAll(); }
-  });
+function closeSettings() {
+  $('settModal').classList.remove('on');
+}
 
+export function initSettings() {
   $('sClose').addEventListener('click', closeSettings);
   $('settModal').addEventListener('click', e => {
     if (e.target === $('settModal')) closeSettings();
@@ -126,6 +122,11 @@ export function initSettings() {
     renderInventory($('searchInp') ? $('searchInp').value.trim() : '');
   });
 
+  $('perfModeOn').addEventListener('change', function () {
+    updateCfg({ perfMode: this.checked });
+    document.body.classList.toggle('perf-mode', this.checked);
+  });
+
   $('resetBtn').addEventListener('click', () => {
     if (confirm('Сбросить весь прогресс? Необратимо!')) {
       resetAll();
@@ -136,10 +137,4 @@ export function initSettings() {
     $('settModal').classList.remove('on');
     openTutorial();
   });
-}
-
-function closeSettings() {
-  const n = $('settNameInput').value.trim();
-  if (n && n !== getPlayerName()) { setPlayerName(n); updatePlayerNameUI(); saveAll(); }
-  $('settModal').classList.remove('on');
 }

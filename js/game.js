@@ -2,7 +2,8 @@
 import {
   getLvl, getXp, getQuests, getQprog, getBdgLvl, getStats, getInv, L,
   setLvl, setXp, setQuests, setQprog, setBdgLvl, saveAll,
-  getCoins, setCoins, getStreak, setStreak, getPlayerName
+  getCoins, setCoins, getStreak, setStreak, getPlayerName,
+  getStreakDay, setStreakDay, getLastReset, setLastReset
 } from './state.js';
 import { BADGE_XP } from './config.js';
 import { S } from './audio.js';
@@ -148,24 +149,24 @@ export function checkBadges() {
 
 export function checkStreak() {
   const today = new Date().toDateString();
-  const last = localStorage.getItem('streakDay');
+  const last = getStreakDay();
   let s = getStreak();
   if (!last) { s = 1; } else {
     const d = (new Date(today) - new Date(last)) / 86400000;
     if (d < 1) { /* same day */ } else if (d < 2) { s++; } else { s = 1; }
   }
   setStreak(s);
-  localStorage.setItem('streakDay', today);
+  setStreakDay(today);
   saveAll();
 }
 
 export function dailyReset() {
   const today = new Date().toDateString();
-  const last = localStorage.getItem('lastReset');
+  const last = getLastReset();
   if (last !== today) {
     generateQuests();
     // generateLots is in shop module, called from main
-    localStorage.setItem('lastReset', today);
+    setLastReset(today);
   }
 }
 

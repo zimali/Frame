@@ -1,36 +1,54 @@
 // js/main.js
 import { $, applyBgHue, setBodyRar } from './utils.js';
-import { getCfg, getLvl, getXp, getStreak, getPlayerName, L, saveAll } from './state.js';
+import { getCfg, getLvl, getXp, getStreak, L, isLoggedIn, updateCfg, hasTutDone } from './state.js';
 import { initAudio, resumeAudio, S, setMusicType } from './audio.js';
-import { initNameScreen, updatePlayerNameUI, showNameScreen, hideNameScreen } from './ui/name.js';
+import { initAccountScreen, showAccountScreen, hideAccountScreen, updatePlayerNameUI } from './ui/accounts.js';
 import { initPack, resetPack } from './ui/pack.js';
-import { initPackTypePicker, updatePackTypeIndicator } from './ui/packtype.js';
 import { initInventory, renderInventory } from './ui/inventory.js';
 import { initCatalog } from './ui/catalog.js';
 import { initCollections, renderCollectionChips } from './ui/collections.js';
 import { initShop, updateShopUI, startShopTimer } from './ui/shop.js';
-import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI, initDiamondClaim } from './ui/info.js';
+import { initInfoTab, updateLevel, renderQuests, updateDiamondBanner, renderBadges, updateStreakUI, initDiamondClaim, initProfileSection, renderProfile } from './ui/info.js';
 import { initPreview, closePreview } from './ui/preview.js';
 import { initSettings, openSettings } from './ui/settings.js';
 import { initTutorial, openTutorial } from './ui/tutorial.js';
-import { initNameScreen as initNameScreen2 } from './ui/name.js';
 import { dailyReset, checkStreak, checkQuests, checkBadges } from './game.js';
 import { generateLots } from './ui/shop.js';
 
+const LOAD_TIPS_KEY = 'loadTips';
+
+function cycleLoadTips() {
+  const tips = L().loadTips || [];
+  if (!tips.length) return;
+  const el = $('loadTip');
+  let i = 0;
+  el.textContent = tips[0];
+  const timer = setInterval(() => {
+    i = (i + 1) % tips.length;
+    el.style.opacity = '0';
+    setTimeout(() => { el.textContent = tips[i]; el.style.opacity = '1'; }, 180);
+  }, 1500);
+  return () => clearInterval(timer);
+}
+
 // --- Init ---
 function init() {
+  const stopTips = cycleLoadTips();
+
   // Load screen
   setTimeout(() => {
+    if (stopTips) stopTips();
     const ls = $('loadScreen');
     ls.classList.add('hidden');
     ls.addEventListener('transitionend', () => ls.remove(), { once: true });
-    if (!getPlayerName()) {
-      showNameScreen();
+    if (!isLoggedIn()) {
+      showAccountScreen();
     } else {
       updatePlayerNameUI();
-      if (!localStorage.getItem('tutDone')) setTimeout(openTutorial, 500);
+      renderProfile();
+      if (!hasTutDone()) setTimeout(openTutorial, 500);
     }
-  }, 1800);
+  }, 1900);
 
   // Audio: init on first click
   document.addEventListener('click', () => {
@@ -40,20 +58,22 @@ function init() {
     if (cfg.musicOn) setMusicType('main');
   }, { once: true });
 
-  // Apply saved bg
+  // Apply saved bg + perf mode
   applyBgHue(getCfg().bgHue);
   setBodyRar(null);
+  document.body.classList.toggle('perf-mode', !!getCfg().perfMode);
 
-  // Daily reset, streak, quests
-  dailyReset();
-  checkStreak();
-  checkQuests();
-  checkBadges();
+  // Daily reset, streak, quests (only meaningful once logged in; safe no-ops otherwise)
+  if (isLoggedIn()) {
+    dailyReset();
+    checkStreak();
+    checkQuests();
+    checkBadges();
+  }
 
   // Initialize modules
-  initNameScreen();
+  initAccountScreen();
   initPack();
-  initPackTypePicker();
   initInventory();
   initCatalog();
   initShop();
@@ -62,6 +82,7 @@ function init() {
   initTutorial();
   initCollections();
   initDiamondClaim();
+  initProfileSection();
 
   // Info tab initial render
   initInfoTab();
@@ -79,7 +100,7 @@ function init() {
       updateDocTitle(tab);
       if (tab === 'shop') { setMusicType('shop'); updateShopUI(); startShopTimer(); } else setMusicType('main');
       if (tab === 'inv') { renderCollectionChips(); renderInventory($('searchInp').value.trim()); }
-      if (tab === 'info') { updateLevel(); renderQuests(); updateDiamondBanner(); renderBadges(); updateStreakUI(); updatePlayerNameUI(); }
+      if (tab === 'info') { updateLevel(); renderQuests(); updateDiamondBanner(); renderBadges(); updateStreakUI(); renderProfile(); }
       if (tab === 'open') setBodyRar(null);
     });
   });
@@ -96,7 +117,6 @@ function init() {
   applyI18n();
 
   // Re-apply i18n on language change
-  // (Language change is handled in settings, which calls applyI18n)
   window.applyI18n = applyI18n;
 }
 
@@ -112,7 +132,7 @@ function applyI18n() {
   $('nOpenL').textContent = tx.open;
   $('nInvL').textContent = tx.inv;
   $('nShopL').textContent = tx.shop;
-  $('nInfoL').textContent = tx.info;
+  $('nInfoL').textContent = tx.profileTab || tx.info;
   $('nSettL').textContent = tx.sett;
   $('packHint').textContent = tx.hint;
   $('sTitle').textContent = tx.settTitle;
@@ -131,12 +151,10 @@ function applyI18n() {
   $('sVisGrp').textContent = tx.vis;
   $('sBgLbl').textContent = tx.bgLbl;
   $('sTooltipsLbl').innerHTML = `${tx.tooltipsLbl}<span class="s-sub">${tx.tooltipsSub}</span>`;
-  $('sAvatarLbl').textContent = tx.avatarLbl;
-  updatePackTypeIndicator();
+  $('sPerfLbl').innerHTML = `${tx.perfModeLbl}<span class="s-sub">${tx.perfModeSub}</span>`;
   $('catalogTitleTxt').textContent = tx.catalogTitle;
   $('catTabMovie').textContent = tx.packMovie;
   $('catTabTv').textContent = tx.packTv;
-  $('catTabGame').textContent = tx.packGame;
   $('catRarAll').textContent = tx.all;
   $('catRarCommon').textContent = 'Обыч.';
   $('catRarGold').textContent = tx.gold;
@@ -148,12 +166,21 @@ function applyI18n() {
   $('catalogBtn').setAttribute('aria-label', tx.catalogBtn);
   $('selectModeBtn').title = tx.selectBtn;
   $('selectModeBtn').setAttribute('aria-label', tx.selectBtn);
+  $('acctPickerTitle').textContent = tx.chooseAcct;
+  $('acctCreateNewLbl').textContent = tx.createAcct;
+  $('acctCreateTitle').textContent = tx.newAcctTitle;
+  $('acctNameInput').placeholder = tx.usernamePh;
+  $('acctAvatarLabel').textContent = tx.avatarLbl || '';
+  $('acctShuffleLbl').textContent = tx.shuffleAvatar;
+  $('acctPerfLbl').textContent = tx.perfModeLbl;
+  $('acctPerfSub').textContent = tx.perfModeSub;
   updateLevel();
   renderQuests();
   updateDiamondBanner();
   renderBadges();
   updateStreakUI();
   updateShopUI();
+  renderProfile();
   const activeTab = document.querySelector('.nav-btn[data-tab].active');
   updateDocTitle(activeTab ? activeTab.dataset.tab : 'open');
 }
