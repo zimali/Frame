@@ -1,5 +1,5 @@
 // js/utils.js
-import { RARS, RAR_COLOR, RAR_ICON, TMDB_IMG } from './config.js';
+import { RARS, RAR_COLOR, RAR_ICON, TMDB_IMG, dicebearUrl } from './config.js';
 import { L } from './state.js';
 
 export function rndRar(weights) {
@@ -12,26 +12,17 @@ export function rndRar(weights) {
   return RARS[0];
 }
 
-// RAWG (games) already returns full, absolute poster URLs; TMDB (movies/tv) returns
-// relative paths that need the base image host prefixed.
 export function getPosterUrl(card, fallbackSize = 12) {
   if (!card.poster_path) {
     const t = card.title || '—';
     return `https://via.placeholder.com/200x300/1a1a1a/fff?text=${encodeURIComponent(t.substring(0, fallbackSize))}`;
   }
-  return /^https?:\/\//.test(card.poster_path) ? card.poster_path : TMDB_IMG + card.poster_path;
+  return TMDB_IMG + card.poster_path;
 }
 
-// RAWG/FreeToGame-style game thumbnails are landscape (16:9), while the card grid is
-// portrait (2:3) like movie/tv posters. Forcing a cover-crop on a landscape image cuts
-// off the meaningful part of it, so games get a blurred-backdrop + full-image treatment
-// instead of a hard crop.
 export function posterImgHTML(card, extraClass = '') {
   const po = getPosterUrl(card, 12);
   const t = (card.title || '—').replace(/"/g, '&quot;');
-  if (card.media_type === 'game') {
-    return `<div class="game-cover-wrap"><div class="game-cover-bg" style="background-image:url('${po}')"></div><img class="game-cover-fg ${extraClass}" src="${po}" alt="${t}" loading="lazy"></div>`;
-  }
   return `<img class="${extraClass}" src="${po}" alt="${t}" loading="lazy">`;
 }
 
@@ -60,6 +51,11 @@ export function applyBgHue(h) {
 }
 
 export function $(id) { return document.getElementById(id); }
+
+export function avatarImgHTML(styleSeed, extraClass = '') {
+  if (!styleSeed) return `<i class="fas fa-user"></i>`;
+  return `<img class="avatar-img ${extraClass}" src="${dicebearUrl(styleSeed.style, styleSeed.seed)}" alt="avatar" loading="lazy">`;
+}
 
 export function highlightText(text, query) {
   const idx = text.toLowerCase().indexOf(query.toLowerCase());

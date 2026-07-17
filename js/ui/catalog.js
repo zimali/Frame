@@ -1,11 +1,13 @@
 // js/ui/catalog.js
 import { $, posterImgHTML, wireCardTooltips } from '../utils.js';
-import { getInv, getKnownTitles, L, getCfg } from '../state.js';
+import { getInv, L, getCfg } from '../state.js';
 import { S } from '../audio.js';
 import { showPreview } from './preview.js';
+import { searchTitles } from '../api.js';
 
 let activeType = 'movie';
 let activeRarity = 'all';
+let searchSeq = 0; // guards against out-of-order async responses overwriting newer results
 
 function findOwnedMatches(query) {
   const q = query.trim().toLowerCase();
@@ -16,50 +18,32 @@ function findOwnedMatches(query) {
   );
 }
 
-function findUnknownMatches(query, ownedIds) {
-  if (activeRarity !== 'all') return []; // rarity is a property of an owned card, not a bare title
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  return getKnownTitles(activeType).filter(t =>
-    !ownedIds.has(t.id.toString()) && t.title.toLowerCase().includes(q)
-  );
-}
-
-function renderResults() {
+function renderGrid(owned, live) {
   const grid = $('catalogGrid');
   const empty = $('catalogEmpty');
-  const query = $('catalogSearch').value;
 
-  const owned = findOwnedMatches(query);
-  const ownedIds = new Set(owned.map(c => c.movieId));
-  const unknown = query.trim() ? findUnknownMatches(query, ownedIds) : [];
-
-  if (!query.trim() && activeRarity === 'all') {
+  if (!owned.length && !live.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
-    empty.textContent = L().catalogHint;
-    return;
-  }
-  if (!owned.length && !unknown.length) {
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    empty.textContent = L().catalogNoMatch;
     return;
   }
   empty.style.display = 'none';
+
+  const ownedIds = new Set(owned.map(c => c.movieId));
+  const liveFiltered = live.filter(t => !ownedIds.has(t.id.toString()));
 
   const ownedHtml = owned.map(c => `
     <div class="cat-item owned" data-id="${c.id}" data-tip="${c.title.replace(/"/g, '&quot;')}">
       ${posterImgHTML(c)}
       <div class="cat-rar-dot rarity-${c.rarity}"></div>
     </div>`).join('');
-  const unknownHtml = unknown.map(t => `
+  const liveHtml = liveFiltered.map(t => `
     <div class="cat-item unknown-hit" data-known-id="${t.id}" data-tip="${L().catalogUnowned}">
       ${posterImgHTML(t)}
       <div class="cat-unowned-tag">${L().catalogUnowned}</div>
     </div>`).join('');
 
-  grid.innerHTML = ownedHtml + unknownHtml;
+  grid.innerHTML = ownedHtml + liveHtml;
   wireCardTooltips(grid, getCfg().tooltips);
 
   grid.querySelectorAll('.cat-item.owned').forEach(el => {
@@ -70,12 +54,46 @@ function renderResults() {
   });
   grid.querySelectorAll('.cat-item.unknown-hit').forEach(el => {
     el.addEventListener('click', () => {
-      const t = getKnownTitles(activeType).find(x => x.id.toString() === el.dataset.knownId);
+      const t = liveFiltered.find(x => x.id.toString() === el.dataset.knownId);
       if (!t) return;
       S.click();
       showPreview({ title: t.title, poster_path: t.poster_path, media_type: activeType, movieId: t.id.toString(), rarity: null }, { viewOnly: true });
     });
   });
+}
+
+async function renderResults() {
+  const query = $('catalogSearch').value;
+  const owned = findOwnedMatches(query);
+
+  if (!query.trim()) {
+    $('catalogSpinner').classList.remove('show');
+    $('catalogEmpty').textContent = L().catalogHint;
+    renderGrid(owned, []);
+    return;
+  }
+
+  if (activeRarity !== 'all') {
+    // Rarity is a property of an owned card, not a bare title — no point live-searching.
+    $('catalogSpinner').classList.remove('show');
+    $('catalogEmpty').textContent = L().catalogNoMatch;
+    renderGrid(owned, []);
+    return;
+  }
+
+  const seq = ++searchSeq;
+  $('catalogSpinner').classList.add('show');
+  const live = await searchTitles(query, activeType);
+  if (seq !== searchSeq) return; // a newer keystroke already superseded this request
+  $('catalogSpinner').classList.remove('show');
+  $('catalogEmpty').textContent = L().catalogNoMatch;
+  renderGrid(owned, live);
+}
+
+let debounceTimer = null;
+function onSearchInput() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(renderResults, 350);
 }
 
 export function openCatalog() {
@@ -95,7 +113,7 @@ export function initCatalog() {
   $('catalogBtn').addEventListener('click', () => { S.click(); openCatalog(); });
   $('catalogClose').addEventListener('click', () => { S.close(); closeCatalog(); });
   $('catalogOv').addEventListener('click', e => { if (e.target === $('catalogOv')) closeCatalog(); });
-  $('catalogSearch').addEventListener('input', renderResults);
+  $('catalogSearch').addEventListener('input', onSearchInput);
 
   document.querySelectorAll('#catalogTypeTabs [data-ctype]').forEach(btn => {
     btn.addEventListener('click', () => {

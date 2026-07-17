@@ -1,11 +1,12 @@
 // js/ui/info.js
-import { $, cardHTML, wireCardTooltips } from '../utils.js';
-import { getLvl, getXp, getStreak, getQuests, getQprog, getBdgLvl, getStats, getInv, L, setLvl, setXp, saveAll, pushInv, nextCardSerial, getCfg } from '../state.js';
+import { $, cardHTML, wireCardTooltips, avatarImgHTML } from '../utils.js';
+import { getLvl, getXp, getStreak, getQuests, getQprog, getBdgLvl, getStats, getInv, L, setLvl, setXp, saveAll, pushInv, nextCardSerial, getCfg, getActiveAccount, updateAccountProfile, logoutAccount, deleteAccount } from '../state.js';
 import { reqXP, claimDiamond } from '../game.js';
 import { BADGE_XP, CIRC } from '../config.js';
 import { S, cardSound } from '../audio.js';
 import { notify, confetti, fireworks } from './notifications.js';
 import { getCandidates } from '../api.js';
+import { renderAvatarPicker, refreshAvatarPickerSeed } from './avatarpicker.js';
 
 const BDGS = [
   { id: 'packs', name: 'Коллекционер паков', icon: 'fa-box-open', color: '#60a5fa', thresholds: [10, 50, 150, 400, 1000], labels: ['Новичок', 'Любитель', 'Опытный', 'Ветеран', 'Легенда'], value: () => getStats().packs },
@@ -135,6 +136,62 @@ export function initInfoTab() {
   updateDiamondBanner();
   renderBadges();
   updateStreakUI();
+  renderProfile();
+}
+
+// --- Profile section (avatar, username, account switch/delete) ---
+export function renderProfile() {
+  const acct = getActiveAccount();
+  if (!acct) return;
+  $('profileAvatarBtn').innerHTML = avatarImgHTML({ style: acct.avatarStyle, seed: acct.avatarSeed });
+  $('profileNameInput').value = acct.username;
+  $('profileHdr').textContent = L().profileHdr;
+  $('profileSwitchBtn').innerHTML = `<i class="fas fa-right-left"></i> ${L().switchAcct}`;
+  $('profileDeleteBtn').innerHTML = `<i class="fas fa-trash"></i> ${L().deleteAcct}`;
+}
+
+let avatarDraft = null;
+
+export function initProfileSection() {
+  $('profileNameInput').addEventListener('change', function () {
+    const v = this.value.trim();
+    const acct = getActiveAccount();
+    if (v && acct) { updateAccountProfile(acct.id, { username: v }); renderProfile(); }
+  });
+
+  $('profileAvatarBtn').addEventListener('click', () => {
+    S.click();
+    const acct = getActiveAccount();
+    avatarDraft = { style: acct.avatarStyle, seed: acct.avatarSeed };
+    renderAvatarPicker($('profileAvatarGrid'), avatarDraft, (style, seed) => { avatarDraft = { style, seed }; });
+    $('avatarEditModal').classList.add('on');
+  });
+  $('avatarEditClose').addEventListener('click', () => {
+    const acct = getActiveAccount();
+    if (avatarDraft && acct) { updateAccountProfile(acct.id, { avatarStyle: avatarDraft.style, avatarSeed: avatarDraft.seed }); renderProfile(); }
+    $('avatarEditModal').classList.remove('on');
+  });
+  $('avatarEditModal').addEventListener('click', e => { if (e.target === $('avatarEditModal')) $('avatarEditClose').click(); });
+  $('profileAvatarShuffle').addEventListener('click', () => {
+    S.click();
+    const newSeed = Math.random().toString(36).slice(2, 10);
+    if (avatarDraft) avatarDraft.seed = newSeed;
+    refreshAvatarPickerSeed($('profileAvatarGrid'), newSeed);
+  });
+
+  $('profileSwitchBtn').addEventListener('click', () => {
+    S.click();
+    logoutAccount();
+    location.reload();
+  });
+
+  $('profileDeleteBtn').addEventListener('click', () => {
+    const acct = getActiveAccount();
+    if (!acct) return;
+    if (!confirm(L().deleteAcctConfirm(acct.username))) return;
+    deleteAccount(acct.id);
+    location.reload();
+  });
 }
 
 // --- Diamond card claim ---

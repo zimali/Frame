@@ -1,58 +1,145 @@
 // js/state.js
 import { LANGS } from './config.js';
 
-// --- Load / persist ---
 const ls = localStorage;
-let cfg = JSON.parse(ls.getItem('brl_cfg') || '{}');
-cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 160, tooltips: true, autoTiltOn: false, packType: 'movie', ...cfg };
 
-let inv = JSON.parse(ls.getItem('inv') || '[]');
-let prog = JSON.parse(ls.getItem('prog') || '{"lvl":0,"xp":0}');
+// ═══ ACCOUNTS ═══
+// Lightweight local "accounts" system (no server): each account is a distinct
+// namespace for all game data, so several profiles can coexist in one browser.
+// Account metadata (username/avatar) lives in a shared, un-namespaced registry;
+// everything else (inventory, coins, quests, etc.) is stored under `acct_{id}_key`.
+let accounts = JSON.parse(ls.getItem('accounts') || '[]');
+let activeAccountId = ls.getItem('activeAccountId') || null;
+
+function K(key) {
+  return activeAccountId ? `acct_${activeAccountId}_${key}` : key;
+}
+
+function migrateLegacyDataIfNeeded() {
+  // Older versions of the site stored everything under plain (un-namespaced) keys.
+  // If we find that data and no accounts exist yet, adopt it into a first account
+  // instead of silently discarding someone's progress.
+  if (accounts.length || ls.getItem('inv') === null && ls.getItem('playerName') === null) return;
+  const id = 'a' + Date.now().toString(36);
+  const legacyKeys = ['inv', 'prog', 'coins', 'lots', 'shopT', 'quests', 'qprog', 'bdgLvl',
+    'streak', 'st_packs', 'st_sells', 'st_buys', 'cardSerial', 'collections', 'tutDone', 'lastReset'];
+  legacyKeys.forEach(k => {
+    const v = ls.getItem(k);
+    if (v !== null) { ls.setItem(`acct_${id}_${k}`, v); ls.removeItem(k); }
+  });
+  const legacyName = ls.getItem('playerName') || 'Игрок';
+  accounts = [{ id, username: legacyName, avatarStyle: 'identicon', avatarSeed: legacyName, createdAt: Date.now() }];
+  activeAccountId = id;
+  ls.removeItem('playerName');
+  ls.removeItem('playerAvatar');
+  ls.setItem('accounts', JSON.stringify(accounts));
+  ls.setItem('activeAccountId', id);
+}
+migrateLegacyDataIfNeeded();
+
+export function getAccounts() { return accounts; }
+export function getActiveAccountId() { return activeAccountId; }
+export function getActiveAccount() { return accounts.find(a => a.id === activeAccountId) || null; }
+export function isLoggedIn() { return !!activeAccountId && !!getActiveAccount(); }
+
+export function createAccount(username, avatarStyle, avatarSeed) {
+  const id = 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const acct = { id, username, avatarStyle, avatarSeed, createdAt: Date.now() };
+  accounts.push(acct);
+  ls.setItem('accounts', JSON.stringify(accounts));
+  activeAccountId = id;
+  ls.setItem('activeAccountId', id);
+  return acct;
+}
+
+export function switchAccount(id) {
+  if (!accounts.some(a => a.id === id)) return false;
+  activeAccountId = id;
+  ls.setItem('activeAccountId', id);
+  return true;
+}
+
+export function logoutAccount() {
+  activeAccountId = null;
+  ls.removeItem('activeAccountId');
+}
+
+export function deleteAccount(id) {
+  const wasActive = activeAccountId === id;
+  accounts = accounts.filter(a => a.id !== id);
+  ls.setItem('accounts', JSON.stringify(accounts));
+  // Sweep every localStorage key namespaced to this account.
+  const prefix = `acct_${id}_`;
+  const toRemove = [];
+  for (let i = 0; i < ls.length; i++) {
+    const k = ls.key(i);
+    if (k && k.startsWith(prefix)) toRemove.push(k);
+  }
+  toRemove.forEach(k => ls.removeItem(k));
+  if (wasActive) { activeAccountId = null; ls.removeItem('activeAccountId'); }
+}
+
+export function updateAccountProfile(id, updates) {
+  const acct = accounts.find(a => a.id === id);
+  if (!acct) return false;
+  Object.assign(acct, updates);
+  ls.setItem('accounts', JSON.stringify(accounts));
+  return true;
+}
+
+export function getPlayerName() { return getActiveAccount()?.username || ''; }
+export function setPlayerName(v) { if (activeAccountId) updateAccountProfile(activeAccountId, { username: v }); }
+export function getPlayerAvatar() {
+  const a = getActiveAccount();
+  return a ? { style: a.avatarStyle, seed: a.avatarSeed } : null;
+}
+export function setPlayerAvatar(style, seed) {
+  if (activeAccountId) updateAccountProfile(activeAccountId, { avatarStyle: style, avatarSeed: seed });
+}
+
+// ═══ PER-ACCOUNT GAME STATE ═══
+let cfg = JSON.parse(ls.getItem('brl_cfg') || '{}');
+cfg = { lang: 'ru', sfxVol: 1, musicVol: 0.25, musicOn: true, bgHue: 160, tooltips: true, autoTiltOn: false, perfMode: false, ...cfg };
+
+let inv = JSON.parse(ls.getItem(K('inv')) || '[]');
+let prog = JSON.parse(ls.getItem(K('prog')) || '{"lvl":0,"xp":0}');
 let lvl = prog.lvl || 0;
 let xp = prog.xp || 0;
-let coins = parseInt(ls.getItem('coins') || '0');
-let lots = JSON.parse(ls.getItem('lots') || '[]');
-let shopT = parseInt(ls.getItem('shopT') || '0');
-let quests = JSON.parse(ls.getItem('quests') || '[]');
-let qprog = JSON.parse(ls.getItem('qprog') || '{}');
-let bdgLvl = JSON.parse(ls.getItem('bdgLvl') || '{}');
+let coins = parseInt(ls.getItem(K('coins')) || '0');
+let lots = JSON.parse(ls.getItem(K('lots')) || '[]');
+let shopT = parseInt(ls.getItem(K('shopT')) || '0');
+let quests = JSON.parse(ls.getItem(K('quests')) || '[]');
+let qprog = JSON.parse(ls.getItem(K('qprog')) || '{}');
+let bdgLvl = JSON.parse(ls.getItem(K('bdgLvl')) || '{}');
 let stats = {
-  packs: +ls.getItem('st_packs') || 0,
-  sells: +ls.getItem('st_sells') || 0,
-  buys: +ls.getItem('st_buys') || 0
+  packs: +ls.getItem(K('st_packs')) || 0,
+  sells: +ls.getItem(K('st_sells')) || 0,
+  buys: +ls.getItem(K('st_buys')) || 0
 };
-let streak = parseInt(ls.getItem('streak') || '0');
-let playerName = ls.getItem('playerName') || '';
-let playerAvatar = ls.getItem('playerAvatar') || '';
-let cardSerial = parseInt(ls.getItem('cardSerial') || '0');
-let collections = JSON.parse(ls.getItem('collections') || 'null') || [
+let streak = parseInt(ls.getItem(K('streak')) || '0');
+let cardSerial = parseInt(ls.getItem(K('cardSerial')) || '0');
+let collections = JSON.parse(ls.getItem(K('collections')) || 'null') || [
   { id: 'all', name: 'Все', deletable: false }
 ];
-// Titles ever seen as pack candidates (not necessarily owned) — powers the collection catalog.
-let knownTitles = JSON.parse(ls.getItem('knownTitles') || '[]');
-const MAX_KNOWN_TITLES = 600;
 
 export function saveAll() {
-  ls.setItem('inv', JSON.stringify(inv));
-  ls.setItem('prog', JSON.stringify({ lvl, xp }));
-  ls.setItem('coins', coins);
-  ls.setItem('lots', JSON.stringify(lots));
-  ls.setItem('shopT', shopT);
-  ls.setItem('quests', JSON.stringify(quests));
-  ls.setItem('qprog', JSON.stringify(qprog));
-  ls.setItem('bdgLvl', JSON.stringify(bdgLvl));
-  ls.setItem('brl_cfg', JSON.stringify(cfg));
-  ls.setItem('playerName', playerName);
-  ls.setItem('playerAvatar', playerAvatar);
-  ['packs', 'sells', 'buys'].forEach(k => ls.setItem('st_' + k, stats[k]));
-  ls.setItem('streak', streak);
-  ls.setItem('cardSerial', cardSerial);
-  ls.setItem('collections', JSON.stringify(collections));
-  ls.setItem('knownTitles', JSON.stringify(knownTitles));
+  ls.setItem(K('inv'), JSON.stringify(inv));
+  ls.setItem(K('prog'), JSON.stringify({ lvl, xp }));
+  ls.setItem(K('coins'), coins);
+  ls.setItem(K('lots'), JSON.stringify(lots));
+  ls.setItem(K('shopT'), shopT);
+  ls.setItem(K('quests'), JSON.stringify(quests));
+  ls.setItem(K('qprog'), JSON.stringify(qprog));
+  ls.setItem(K('bdgLvl'), JSON.stringify(bdgLvl));
+  ls.setItem('brl_cfg', JSON.stringify(cfg)); // cfg is a device/browser preference, shared across accounts
+  ['packs', 'sells', 'buys'].forEach(k => ls.setItem(K('st_' + k), stats[k]));
+  ls.setItem(K('streak'), streak);
+  ls.setItem(K('cardSerial'), cardSerial);
+  ls.setItem(K('collections'), JSON.stringify(collections));
 }
 
 export function getState() {
-  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, playerName, playerAvatar, cfg, cardSerial, collections, knownTitles };
+  return { inv, lvl, xp, coins, lots, shopT, quests, qprog, bdgLvl, stats, streak, cfg, cardSerial, collections };
 }
 
 export function setState(newState) {
@@ -67,12 +154,9 @@ export function setState(newState) {
   if (newState.bdgLvl !== undefined) bdgLvl = newState.bdgLvl;
   if (newState.stats !== undefined) stats = newState.stats;
   if (newState.streak !== undefined) streak = newState.streak;
-  if (newState.playerName !== undefined) playerName = newState.playerName;
-  if (newState.playerAvatar !== undefined) playerAvatar = newState.playerAvatar;
   if (newState.cfg !== undefined) cfg = newState.cfg;
   if (newState.cardSerial !== undefined) cardSerial = newState.cardSerial;
   if (newState.collections !== undefined) collections = newState.collections;
-  if (newState.knownTitles !== undefined) knownTitles = newState.knownTitles;
   saveAll();
 }
 
@@ -113,11 +197,6 @@ export function incStat(k, n = 1) { stats[k] = (stats[k] || 0) + n; saveAll(); }
 export function getStreak() { return streak; }
 export function setStreak(v) { streak = v; saveAll(); }
 
-export function getPlayerName() { return playerName; }
-export function setPlayerName(v) { playerName = v; saveAll(); }
-export function getPlayerAvatar() { return playerAvatar; }
-export function setPlayerAvatar(v) { playerAvatar = v; saveAll(); }
-
 export function getCfg() { return cfg; }
 export function setCfg(v) { cfg = v; saveAll(); }
 export function updateCfg(updates) { Object.assign(cfg, updates); saveAll(); }
@@ -125,11 +204,19 @@ export function updateCfg(updates) { Object.assign(cfg, updates); saveAll(); }
 export function getLang() { return cfg.lang; }
 export function L() { return LANGS[cfg.lang] || LANGS.ru; }
 
+export function hasTutDone() { return ls.getItem(K('tutDone')) === '1'; }
+export function setTutDone() { ls.setItem(K('tutDone'), '1'); }
+
+export function getStreakDay() { return ls.getItem(K('streakDay')); }
+export function setStreakDay(v) { ls.setItem(K('streakDay'), v); }
+export function getLastReset() { return ls.getItem(K('lastReset')); }
+export function setLastReset(v) { ls.setItem(K('lastReset'), v); }
+
 export function hasCard(movieId, rarity, mediaType) {
   return inv.some(c => c.movieId === movieId && c.rarity === rarity && (mediaType === undefined || c.media_type === mediaType));
 }
 
-// --- Card serial numbers (global, sequential, never reused) ---
+// --- Card serial numbers (global per account, sequential, never reused) ---
 export function nextCardSerial() {
   cardSerial += 1;
   saveAll();
@@ -165,7 +252,6 @@ export function deleteCollection(id) {
   const c = collections.find(x => x.id === id);
   if (!c || !c.deletable) return false;
   collections = collections.filter(x => x.id !== id);
-  // Return cards to "all" (i.e. clear collectionId so they show up in Все again)
   inv.forEach(card => { if (card.collectionId === id) delete card.collectionId; });
   saveAll();
   return true;
@@ -182,35 +268,10 @@ export function moveCardsToCollection(cardIds, collectionId) {
   saveAll();
 }
 
-// --- Pack type (movie / tv / game) ---
-export function getPackType() { return cfg.packType || 'movie'; }
-export function setPackType(t) { cfg.packType = t; saveAll(); }
-
-// --- Known titles (collection catalog / dex) ---
-// Records every candidate ever surfaced by a pack roll, not just the one kept —
-// this is what lets the catalog show "seen but not yet owned" entries.
-export function addKnownTitles(items, mediaType) {
-  const map = new Map(knownTitles.map(t => [`${t.media_type}:${t.id}`, t]));
-  items.forEach(it => {
-    const key = `${mediaType}:${it.id}`;
-    if (!map.has(key)) {
-      map.set(key, { id: it.id, title: it.title || it.name || '—', poster_path: it.poster_path, media_type: mediaType });
-    }
-  });
-  let merged = [...map.values()];
-  if (merged.length > MAX_KNOWN_TITLES) merged = merged.slice(merged.length - MAX_KNOWN_TITLES);
-  knownTitles = merged;
-  saveAll();
-}
-
-export function getKnownTitles(mediaType) {
-  return mediaType ? knownTitles.filter(t => t.media_type === mediaType) : knownTitles;
-}
-
-// --- Reset ---
+// --- Reset (wipes the CURRENT account's progress only, not the account itself) ---
 export function resetAll() {
   ['inv', 'prog', 'coins', 'lots', 'shopT', 'quests', 'qprog', 'bdgLvl',
    'lastReset', 'streak', 'streakDay', 'st_packs', 'st_sells', 'st_buys',
-   'playerName', 'playerAvatar', 'tutDone', 'cardSerial', 'collections', 'knownTitles'].forEach(k => ls.removeItem(k));
+   'tutDone', 'cardSerial', 'collections'].forEach(k => ls.removeItem(K(k)));
   location.reload();
 }

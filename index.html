@@ -20,27 +20,48 @@
 
 <!-- ═══ LOADING SCREEN ═══ -->
 <div id="loadScreen">
-<div class="load-bulb">
-  <div class="frame-loader"></div>
-</div>  <div class="load-title">Welcome to Frame!</div>
-  <div class="load-dots">
-    <div class="load-dot"></div><div class="load-dot"></div><div class="load-dot"></div>
-  </div>
-  <div class="load-hint">загрузка...</div>
+  <div class="load-mark"><div class="frame-loader"></div></div>
+  <div class="load-progress-track"><div class="load-progress-fill"></div></div>
+  <div class="load-tip" id="loadTip"></div>
 </div>
 
-<!-- ═══ NAME ENTRY ═══ -->
+<!-- ═══ ACCOUNT SCREEN (login / pick / create) ═══ -->
 <div id="nameScreen" class="hidden">
-<div class="name-logo">
-  <div class="frame-loader"></div>
-</div>  <div class="name-headline">Добро пожаловать!</div>
-  <div class="name-sub">Как тебя зовут? Имя будет отображаться в прогрессе.</div>
-  <div class="name-input-wrap">
-    <input type="text" class="name-input" id="nameInput" placeholder="Твоё имя..." maxlength="24" autocomplete="off">
+  <div class="name-logo"><div class="frame-loader"></div></div>
+
+  <!-- Picker view: shown when one or more local accounts already exist -->
+  <div id="acctPickerView" class="acct-view" style="display:none">
+    <div class="name-headline" id="acctPickerTitle">Выбери аккаунт</div>
+    <div class="acct-picker-list" id="acctPickerList"></div>
+    <button class="acct-create-new-btn" id="acctCreateNewBtn"><i class="fas fa-plus"></i> <span id="acctCreateNewLbl">Создать аккаунт</span></button>
   </div>
-  <div class="avatar-pick-label" id="avatarPickLabel">Выбери иконку профиля</div>
-  <div class="avatar-pick-row" id="avatarPickRow"></div>
-  <button class="name-start-btn" id="nameStartBtn" disabled>Начать →</button>
+
+  <!-- Create view: username + avatar + perf-mode choice -->
+  <div id="acctCreateView" class="acct-view" style="display:none">
+    <button class="acct-back-btn" id="acctBackBtn" style="display:none"><i class="fas fa-arrow-left"></i></button>
+    <div class="name-headline" id="acctCreateTitle">Добро пожаловать!</div>
+    <div class="name-sub" id="acctCreateSub">Как тебя зовут? Имя будет отображаться в профиле.</div>
+    <div class="name-input-wrap">
+      <input type="text" class="name-input" id="acctNameInput" placeholder="Твоё имя..." maxlength="24" autocomplete="off">
+    </div>
+    <div class="avatar-pick-label" id="acctAvatarLabel">Выбери иконку профиля</div>
+    <div class="avatar-pick-row" id="acctAvatarGrid"></div>
+    <button class="avatar-shuffle-btn" id="acctShuffleBtn"><i class="fas fa-shuffle"></i> <span id="acctShuffleLbl">Другой вариант</span></button>
+    <div class="perf-ask-row">
+      <label class="tog"><input type="checkbox" id="acctPerfToggle"><span class="tog-sl"></span></label>
+      <div><div class="perf-ask-lbl" id="acctPerfLbl">Режим для слабых устройств</div><div class="perf-ask-sub" id="acctPerfSub">Отключает тяжёлые анимации и эффекты</div></div>
+    </div>
+    <button class="name-start-btn" id="acctStartBtn" disabled>Начать →</button>
+  </div>
+</div>
+
+<!-- ═══ AVATAR EDIT MODAL ═══ -->
+<div class="modal" id="avatarEditModal">
+  <div class="modal-box">
+    <div class="mhdr"><span class="mtitle">Иконка профиля</span><button class="mclose" id="avatarEditClose">✕</button></div>
+    <div class="avatar-pick-row avatar-pick-row-modal" id="profileAvatarGrid"></div>
+    <button class="avatar-shuffle-btn" id="profileAvatarShuffle"><i class="fas fa-shuffle"></i> Другой вариант</button>
+  </div>
 </div>
 
 <!-- ═══ DIAMOND DROP OVERLAY ═══ -->
@@ -91,25 +112,27 @@
 <!-- ═══ CATALOG (SEARCH) OVERLAY ═══ -->
 <div class="catalog-ov" id="catalogOv">
   <div class="catalog-hdr">
-    <span class="catalog-title" id="catalogTitleTxt">Каталог коллекции</span>
+    <span class="catalog-title" id="catalogTitleTxt">Каталог</span>
     <button class="pclose" id="catalogClose" aria-label="Закрыть"><i class="fas fa-xmark"></i></button>
   </div>
   <div class="search-box catalog-search-box">
     <i class="fas fa-magnifying-glass"></i>
     <input type="text" id="catalogSearch" placeholder="" autocomplete="off">
+    <div class="catalog-spinner" id="catalogSpinner"><i class="fas fa-circle-notch fa-spin"></i></div>
   </div>
-  <div class="catalog-type-tabs" id="catalogTypeTabs">
-    <button class="chip on" data-ctype="movie" id="catTabMovie">Фильмы</button>
-    <button class="chip" data-ctype="tv" id="catTabTv">Сериалы</button>
-    <button class="chip" data-ctype="game" id="catTabGame">Игры</button>
-  </div>
-  <div class="catalog-type-tabs" id="catalogRarityChips">
-    <button class="chip on" data-crar="all" id="catRarAll">Все</button>
-    <button class="chip" data-crar="common" id="catRarCommon">Обыч.</button>
-    <button class="chip" data-crar="gold" id="catRarGold" style="color:#fbbf24;">Золото</button>
-    <button class="chip" data-crar="rainbow" id="catRarRain" style="color:#f87171;">Радуга</button>
-    <button class="chip" data-crar="unique" id="catRarUniq" style="color:#ff4444;">Уник.</button>
-    <button class="chip" data-crar="diamond" id="catRarDia" style="color:#60a5fa;">Алмаз</button>
+  <div class="catalog-filter-block">
+    <div class="catalog-type-tabs" id="catalogTypeTabs">
+      <button class="chip on" data-ctype="movie" id="catTabMovie">Фильмы</button>
+      <button class="chip" data-ctype="tv" id="catTabTv">Сериалы</button>
+    </div>
+    <div class="catalog-rarity-row" id="catalogRarityChips">
+      <button class="chip on" data-crar="all" id="catRarAll">Все</button>
+      <button class="chip" data-crar="common" id="catRarCommon">Обыч.</button>
+      <button class="chip" data-crar="gold" id="catRarGold" style="color:#fbbf24;">Золото</button>
+      <button class="chip" data-crar="rainbow" id="catRarRain" style="color:#f87171;">Радуга</button>
+      <button class="chip" data-crar="unique" id="catRarUniq" style="color:#ff4444;">Уник.</button>
+      <button class="chip" data-crar="diamond" id="catRarDia" style="color:#60a5fa;">Алмаз</button>
+    </div>
   </div>
   <p class="empty" id="catalogEmpty"></p>
   <div class="catalog-grid" id="catalogGrid"></div>
@@ -119,10 +142,6 @@
 <div class="modal" id="settModal">
   <div class="modal-box">
     <div class="mhdr"><span class="mtitle" id="sTitle">⚙️ Настройки</span><button class="mclose" id="sClose">✕</button></div>
-    <div class="s-grp-ttl">Профиль</div>
-    <div class="s-row"><span class="s-lbl">Имя игрока</span><input type="text" class="name-edit-field" id="settNameInput" maxlength="24" placeholder="Имя..."></div>
-    <div class="s-sub-lbl" id="sAvatarLbl">Иконка профиля</div>
-    <div class="avatar-pick-row" id="settAvatarRow"></div>
     <div class="s-grp-ttl" id="sLangGrp">Язык</div>
     <div class="lang-row" id="langRow"></div>
     <div class="s-grp-ttl" id="sAudioGrp">Звук</div>
@@ -131,6 +150,7 @@
     <div class="s-grp-ttl" id="sVisGrp">Визуал</div>
     <div class="s-row"><span class="s-lbl" id="sBgLbl">Оттенок фона</span><div class="swatches" id="swatches"></div></div>
     <div class="s-row"><span class="s-lbl" id="sTooltipsLbl">Подсказки названий<span class="s-sub">Показывать имя фильма при наведении</span></span><label class="tog"><input type="checkbox" id="tooltipsOn"><span class="tog-sl"></span></label></div>
+    <div class="s-row"><span class="s-lbl" id="sPerfLbl">Режим для слабых устройств<span class="s-sub">Отключает тяжёлые анимации и эффекты</span></span><label class="tog"><input type="checkbox" id="perfModeOn"><span class="tog-sl"></span></label></div>
     <div class="s-grp-ttl" id="sDataGrp">Данные</div>
     <div class="s-row"><span class="s-lbl" id="sTutLbl">Туториал<span class="s-sub">Пройти заново</span></span><button class="l-btn" id="reTutBtn">▶ Начать</button></div>
     <div class="s-row"><span class="s-lbl" id="sResetLbl">Сбросить прогресс<span class="s-sub">Необратимо!</span></span><button class="reset-btn" id="resetBtn">Сброс</button></div>
@@ -152,13 +172,16 @@
 <div class="modal" id="tutModal">
   <div class="modal-box">
     <div class="mhdr" style="justify-content:flex-end"><button class="mclose" id="tutClose">✕</button></div>
-    <div id="tutStep0" class="tut-step on"><div class="tut-emoji">💎</div><div class="tut-title">Welcome to Frame!</div><div class="tut-desc">Коллекционная карточная игра с фильмами и сериалами. Давай за минуту объясним как всё работает!</div></div>
-    <div id="tutStep1" class="tut-step"><div class="tut-emoji">🎁</div><div class="tut-title">Открывай паки</div><div class="tut-desc">Нажми на пак — получишь случайную карточку фильма. 5 редкостей: Обычная, Золотая, Радужная, Уникальная, Алмазная.</div></div>
-    <div id="tutStep2" class="tut-step"><div class="tut-emoji">🎴</div><div class="tut-title">Инвентарь</div><div class="tut-desc">Все карточки в разделе «Коллекция». Нажми на карточку — увидишь описание, добавишь в избранное или продашь за монеты.</div></div>
-    <div id="tutStep3" class="tut-step"><div class="tut-emoji">🛒</div><div class="tut-title">Магазин</div><div class="tut-desc">Каждые 4 часа новые лоты. Бесплатный лот — всегда золотая карточка или лучше!</div></div>
-    <div id="tutStep4" class="tut-step"><div class="tut-emoji">📋</div><div class="tut-title">Задания и значки</div><div class="tut-desc">В «Прогрессе» — ежедневные задания (выполни все 3 для алмазной карточки!) и значки с 5 уровнями.</div></div>
-    <div id="tutStep5" class="tut-step"><div class="tut-emoji">🔥</div><div class="tut-title">Стрик входов</div><div class="tut-desc">Заходи каждый день — стрик растёт!</div></div>
-    <div id="tutStep6" class="tut-step"><div class="tut-emoji">🚀</div><div class="tut-title">Готов!</div><div class="tut-desc">Открой свой первый пак и начни коллекцию. Удачи! 💪</div></div>
+    <div id="tutStep0" class="tut-step on"><div class="tut-emoji">💎</div><div class="tut-title">Добро пожаловать в Frame!</div><div class="tut-desc">Коллекционная карточная игра с фильмами и сериалами. Пройдёмся по всему, что умеет сайт — займёт минуту.</div></div>
+    <div id="tutStep1" class="tut-step"><div class="tut-emoji">🎁</div><div class="tut-title">Открой пак</div><div class="tut-desc"><b>Нажми на пак</b> во вкладке «Открыть» — карты пролетят по экрану и остановятся на твоей. 5 редкостей: Обычная, Золотая, Радужная, Уникальная, Алмазная.</div></div>
+    <div id="tutStep2" class="tut-step"><div class="tut-emoji">🔍</div><div class="tut-title">Рассмотри карту</div><div class="tut-desc"><b>Нажми на любую карточку</b> в «Коллекции» — она перевернётся лицом с описанием. Можно приблизить ползунком и включить лёгкое покачивание кнопкой рядом.</div></div>
+    <div id="tutStep3" class="tut-step"><div class="tut-emoji">🗂️</div><div class="tut-title">Ищи и сортируй</div><div class="tut-desc">В «Коллекции» есть <b>поиск по названию</b> и фильтры по редкости. Начни печатать — подсказки появятся сразу.</div></div>
+    <div id="tutStep4" class="tut-step"><div class="tut-emoji">✅</div><div class="tut-title">Выбирай сразу несколько</div><div class="tut-desc"><b>Нажми на иконку рядом с поиском</b> — выделяй несколько карточек и продавай или переноси их в коллекцию одним действием.</div></div>
+    <div id="tutStep5" class="tut-step"><div class="tut-emoji">📁</div><div class="tut-title">Свои коллекции</div><div class="tut-desc"><b>Зажми вкладку «Коллекция»</b> — откроется список твоих папок. Можно создать свою за монеты и разложить карточки по ней.</div></div>
+    <div id="tutStep6" class="tut-step"><div class="tut-emoji">📖</div><div class="tut-title">Каталог</div><div class="tut-desc"><b>Нажми на иконку книги</b> у поиска — можно найти любой фильм или сериал и сразу увидеть, есть ли он уже у тебя.</div></div>
+    <div id="tutStep7" class="tut-step"><div class="tut-emoji">🛒</div><div class="tut-title">Магазин и задания</div><div class="tut-desc">В «Магазине» новые лоты каждые 4 часа. В «Профиле» — ежедневные задания: выполни все 3, чтобы получить алмазную карточку.</div></div>
+    <div id="tutStep8" class="tut-step"><div class="tut-emoji">🙂</div><div class="tut-title">Настрой профиль</div><div class="tut-desc"><b>Нажми на свой аватар</b> во вкладке «Профиль» — сменишь иконку, имя, а также можешь переключить или удалить аккаунт.</div></div>
+    <div id="tutStep9" class="tut-step"><div class="tut-emoji">🚀</div><div class="tut-title">Готово!</div><div class="tut-desc">Теперь ты знаешь всё. Открывай первый пак и начинай собирать коллекцию. Удачи! 💪</div></div>
     <div class="tut-dots" id="tutDots"></div>
     <div class="tut-nav"><button class="tut-btn" id="tutPrev" style="display:none">←</button><button class="tut-btn pri" id="tutNext">Далее</button></div>
   </div>
@@ -180,10 +203,11 @@
       </div>
       <div id="resultState" style="display:none;flex-direction:column;align-items:center;gap:10px;width:100%;">
         <div class="result-rarity" id="resRarity"></div>
+        <div class="car-viewport" id="carViewport" style="display:none">
+          <div class="car-center-marker"></div>
+          <div class="car-track" id="carTrack"></div>
+        </div>
         <div class="result-card-in-area">
-          <div class="result-scroll-mask" id="resScrollMask">
-            <div class="result-scroll-track" id="resScrollTrack"></div>
-          </div>
           <div class="result-card-wrap" id="resCard" style="display:none">
             <div class="flip-wrap" id="resFlipWrap">
               <div class="flipper" id="resFlipper">
@@ -237,9 +261,14 @@
 
   <!-- INFO -->
   <div class="tab-pane" id="tab-info">
-    <div class="player-name-card" id="playerNameCard">
-      <div class="player-name-left"><div class="player-avatar" id="playerAvatarDisplay">👤</div><div><div class="player-name-txt" id="playerNameDisplay">—</div><div class="player-name-sub">Игрок</div></div></div>
-      <button class="name-edit-btn" id="openNameEditBtn"><i class="fas fa-pen"></i> Изменить</button>
+    <div class="sec-hdr" id="profileHdr">Профиль</div>
+    <div class="profile-card">
+      <button class="profile-avatar-big" id="profileAvatarBtn" title="Изменить аватар"></button>
+      <input type="text" class="profile-name-input" id="profileNameInput" maxlength="24" placeholder="Имя...">
+      <div class="profile-actions">
+        <button class="profile-act-btn" id="profileSwitchBtn"><i class="fas fa-right-left"></i> Сменить аккаунт</button>
+        <button class="profile-act-btn danger" id="profileDeleteBtn"><i class="fas fa-trash"></i> Удалить аккаунт</button>
+      </div>
     </div>
     <div class="lvl-card">
       <div class="lvl-ring" id="lvlRing"><svg class="lvl-ring-svg" viewBox="0 0 62 62"><circle cx="31" cy="31" r="27" fill="none" stroke="#252525" stroke-width="4"/><circle id="xpArc" cx="31" cy="31" r="27" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 170" stroke-dashoffset="42" style="transition:stroke-dasharray .5s"/></svg><div class="lvl-inner"><span class="lvl-num" id="lvlNum">0</span></div></div>

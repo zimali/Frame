@@ -1,10 +1,10 @@
 // js/ui/tutorial.js
 import { $ } from '../utils.js';
-import { L } from '../state.js';
+import { L, setTutDone } from '../state.js';
 import { S } from '../audio.js';
 
 let tutStep = 0;
-const tutTotal = 7;
+const tutTotal = 10;
 
 export function openTutorial() {
   tutStep = 0;
@@ -30,7 +30,7 @@ export function initTutorial() {
   $('tutNext').addEventListener('click', () => {
     S.click();
     if (tutStep < tutTotal - 1) showTutStep(tutStep + 1);
-    else { $('tutModal').classList.remove('on'); localStorage.setItem('tutDone', '1'); }
+    else { $('tutModal').classList.remove('on'); setTutDone(); }
   });
   $('tutPrev').addEventListener('click', () => {
     S.click();
@@ -38,12 +38,12 @@ export function initTutorial() {
   });
   $('tutClose').addEventListener('click', () => {
     $('tutModal').classList.remove('on');
-    localStorage.setItem('tutDone', '1');
+    setTutDone();
   });
   $('tutModal').addEventListener('click', e => {
     if (e.target === $('tutModal')) {
       $('tutModal').classList.remove('on');
-      localStorage.setItem('tutDone', '1');
+      setTutDone();
     }
   });
 }
