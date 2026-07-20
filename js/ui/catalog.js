@@ -64,14 +64,18 @@ function renderGrid(owned, live) {
 
 async function renderResults() {
   const query = $('catalogSearch').value;
-  const owned = findOwnedMatches(query);
+  const hasQuery = !!query.trim();
 
-  if (!query.trim()) {
+  // Nothing typed and no rarity filter picked — this is the true empty state,
+  // show the hint and nothing else (the whole point of the redesign).
+  if (!hasQuery && activeRarity === 'all') {
     $('catalogSpinner').classList.remove('show');
     $('catalogEmpty').textContent = L().catalogHint;
-    renderGrid(owned, []);
+    renderGrid([], []);
     return;
   }
+
+  const owned = findOwnedMatches(query);
 
   if (activeRarity !== 'all') {
     // Rarity is a property of an owned card, not a bare title — no point live-searching.
